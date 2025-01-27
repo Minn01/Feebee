@@ -2,6 +2,12 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+
+    // Room Plugin (module)
+    id("com.google.devtools.ksp")
+
+    // KTOR Plugin (Serialization)
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10"
 }
 
 android {
@@ -49,6 +55,42 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    // ViewModel Dependency
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    // Room Dependency
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+
+
+    // Navigation Component Dependency
+    implementation(libs.androidx.navigation.compose)
+
+    // Adaptive Layout Dependency
+    implementation(libs.androidx.adaptive)
+    implementation(libs.androidx.adaptive.layout)
+    implementation(libs.androidx.adaptive.navigation)
+
+    // BottomSheetScaffold, DropDownMenu, FloatingActionButton -> Composable
+    implementation(libs.material3)
+
+    // API related Dependencies
+
+    // KTOR Dependencies
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.client.content.negotiation)
+
+    // KTOR Serialization
+    implementation(libs.ktor.serialization.kotlinx.json)
+
+    // Coil Dependency
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
