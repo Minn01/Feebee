@@ -10,6 +10,7 @@ sealed class AppScreens(val screen: String) {
     data object BudgetControl: AppScreens("budgetControl")
 
     // These screens are going to be for the side menu navigation
+    data object Profile: AppScreens("profile")
     data object Settings: AppScreens("settings")
     data object Notifications: AppScreens("notifications")
     data object LanguageSupport: AppScreens("language")

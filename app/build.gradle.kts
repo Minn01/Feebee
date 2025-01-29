@@ -73,6 +73,9 @@ dependencies {
     implementation(libs.androidx.adaptive.layout)
     implementation(libs.androidx.adaptive.navigation)
 
+    // Constraint Layout Dependency
+    implementation(libs.androidx.constraintlayout.compose)
+
     // BottomSheetScaffold, DropDownMenu, FloatingActionButton -> Composable
     implementation(libs.material3)
 

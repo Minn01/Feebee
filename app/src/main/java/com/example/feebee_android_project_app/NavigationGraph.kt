@@ -38,6 +38,7 @@ fun NavigationGraph(
         composable(AppScreens.BudgetControl.screen) {}
 
         // Side Menu Navigation
+        composable(AppScreens.Profile.screen) {}
         composable(AppScreens.Settings.screen) {}
         composable(AppScreens.Notifications.screen) {}
         composable(AppScreens.LanguageSupport.screen) {}
