@@ -1,6 +1,5 @@
 package com.example.feebee_android_project_app.sideNavigationDrawer
 
-import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -22,8 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,45 +31,51 @@ import androidx.compose.ui.unit.dp
 fun ColorSchemeBox(
     modifier: Modifier
 ) {
-    CustomSwitch(modifier = Modifier)
+    CustomToggleButton(modifier = Modifier)
 }
 
 @Composable
-fun CustomSwitch(
+fun CustomToggleButton(
     modifier: Modifier
 ) {
-    var isChecked by remember { mutableStateOf(false) }
-    val thumbOffset by animateDpAsState(
-        targetValue = if (isChecked) 150.dp else 0.dp,
+    val isChecked = rememberSaveable { mutableStateOf(false) }
+
+    val thumbOffsetX by animateDpAsState(
+        targetValue = if (isChecked.value) 160.dp else 30.dp,
         label = "switch_animation"
     )
 
+    val thumbOffSetY = 7.dp
+
     // Outer box
     Box(
-        modifier = Modifier
+        modifier = modifier
             .padding(start = 16.dp, end = 16.dp)
             .height(60.dp)
-            .fillMaxWidth()
-            .wrapContentWidth()
-            .clickable { isChecked = !isChecked }
+            .clickable { isChecked.value = !isChecked.value }
             .background(
                 color = Color(0xFF18202E),
                 shape = RoundedCornerShape(50)
-            ),
+            )
+            .offset(x = thumbOffsetX, y = thumbOffSetY),
     ) {
 
+        // Inner box with offset
         Box(
             modifier = Modifier
-                .size(150.dp, 50.dp) // Adjusted size
+                .size(150.dp, 43.dp) // Adjusted size
                 .background(
                     color = Color(0xFF29303C).copy(alpha = 0.7f),
                     shape = RoundedCornerShape(50)
                 )
-                .offset(x = thumbOffset)
         )
 
+        // Row for the icons and text
         Row(
-            modifier = Modifier.fillMaxWidth().align(Alignment.Center),
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.Center)
+                .offset(x = thumbOffsetX * (-1), y = thumbOffSetY * (-1)),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             ModeRow(
@@ -89,8 +92,6 @@ fun CustomSwitch(
                 modifier = Modifier
             )
         }
-
-
     }
 }
 
