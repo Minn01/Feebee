@@ -6,7 +6,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.feebee_android_project_app.exchangeRateScreen.ExchangeRateScreen
 import com.example.feebee_android_project_app.ui.theme.Feebee_Android_Project_AppTheme
 
 class MainActivity : ComponentActivity() {
@@ -15,11 +18,16 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Feebee_Android_Project_AppTheme {
-//                MainScreen()
-                Scaffold { contentPadding ->
-                    ExchangeRateScreen(Modifier.padding(contentPadding))
-                }
+                MainScreen()
             }
         }
     }
 }
+
+//@Preview
+//@Composable
+//fun PreviewScreen() {
+//    Feebee_Android_Project_AppTheme {
+//        MainScreen()
+//    }
+//}

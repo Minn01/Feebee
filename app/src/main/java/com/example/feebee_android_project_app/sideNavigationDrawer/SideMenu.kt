@@ -60,7 +60,7 @@ fun SideMenuScreen(
                     drawerState.close()
                 }
 
-                navController.navigate(AppScreens.Settings.screen)
+                navController.navigate(AppScreens.Settings.route)
             }
         )
 
@@ -78,7 +78,7 @@ fun SideMenuScreen(
                     drawerState.close()
                 }
 
-                navController.navigate(AppScreens.Notifications.screen)
+                navController.navigate(AppScreens.Notifications.route)
             }
         )
 
@@ -96,7 +96,7 @@ fun SideMenuScreen(
                     drawerState.close()
                 }
 
-                navController.navigate(AppScreens.LanguageSupport.screen)
+                navController.navigate(AppScreens.LanguageSupport.route)
             }
         )
 
@@ -114,7 +114,7 @@ fun SideMenuScreen(
                     drawerState.close()
                 }
 
-                navController.navigate(AppScreens.ExchangeRate.screen)
+                navController.navigate(AppScreens.ExchangeRate.route)
             }
         )
 
@@ -132,7 +132,7 @@ fun SideMenuScreen(
                     drawerState.close()
                 }
 
-                navController.navigate(AppScreens.ExchangeRate.screen)
+                navController.navigate(AppScreens.ExchangeRate.route)
             }
         )
 

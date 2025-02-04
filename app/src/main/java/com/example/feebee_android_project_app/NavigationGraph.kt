@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.feebee_android_project_app.data.AppScreens
+import com.example.feebee_android_project_app.exchangeRateScreen.ExchangeRateScreen
 import kotlinx.coroutines.CoroutineScope
 
 /*
@@ -19,32 +20,36 @@ import kotlinx.coroutines.CoroutineScope
 fun NavigationGraph(
     navController: NavHostController,
     contentPadding: PaddingValues,
-    drawerState: DrawerState,
-    coroutineScope: CoroutineScope
 ) {
     NavHost(
         navController = navController,
-        startDestination = AppScreens.Home.screen,
+        startDestination = AppScreens.Home.route,
     ) {
         // Bottom App Bar Navigation
-        composable(AppScreens.Home.screen) {
+        composable(AppScreens.Home.route) {
             HomeScreen(
-                modifier = Modifier.padding(contentPadding),
-                drawerState = drawerState,
-                coroutineScope = coroutineScope
+                modifier = Modifier.padding(contentPadding)
             )
         }
-        composable(AppScreens.Accounts.screen) {}
-        composable(AppScreens.BudgetControl.screen) {}
+        composable(AppScreens.Accounts.route) {
+            AccountMainScreen(Modifier.padding(contentPadding))
+        }
+        composable(AppScreens.BudgetControl.route) {}
 
         // Side Menu Navigation
-        composable(AppScreens.Profile.screen) {}
-        composable(AppScreens.Settings.screen) {}
-        composable(AppScreens.Notifications.screen) {}
-        composable(AppScreens.LanguageSupport.screen) {}
-        composable(AppScreens.Guide.screen) {}
+        composable(AppScreens.Profile.route) {
+            ProfileScreen(Modifier.padding(contentPadding))
+        }
+        composable(AppScreens.Settings.route) {
+            SettingScreen(Modifier.padding(contentPadding))
+        }
+        composable(AppScreens.Notifications.route) {}
+        composable(AppScreens.LanguageSupport.route) {}
+        composable(AppScreens.Guide.route) {}
 
         // Both Bottom App Bar & Side Menu Navigation
-        composable(AppScreens.ExchangeRate.screen) {}
+        composable(AppScreens.ExchangeRate.route) {
+            ExchangeRateScreen(modifier = Modifier.padding(contentPadding))
+        }
     }
 }
