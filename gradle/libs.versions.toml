@@ -1,4 +1,5 @@
 [versions]
+accompanistNavigationAnimation = "0.31.6-rc"
 adaptive = "1.0.0"
 agp = "8.7.2"
 coilCompose = "3.0.4"
@@ -21,6 +22,8 @@ navigationCompose = "2.8.5"
 roomRuntime = "2.6.1"
 
 [libraries]
+accompanist-navigation-animation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanistNavigationAnimation" }
+accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistNavigationAnimation" }
 androidx-adaptive = { module = "androidx.compose.material3.adaptive:adaptive", version.ref = "adaptive" }
 androidx-adaptive-layout = { module = "androidx.compose.material3.adaptive:adaptive-layout", version.ref = "adaptive" }
 androidx-adaptive-navigation = { module = "androidx.compose.material3.adaptive:adaptive-navigation", version.ref = "adaptive" }

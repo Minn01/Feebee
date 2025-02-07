@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -23,6 +23,7 @@ import com.example.feebee_android_project_app.R
 @Composable
 fun ExchangeRateTab(
     countryCode: String,
+    conversionRate: Double,
     modifier: Modifier
 ) {
     ElevatedCard(
@@ -43,17 +44,20 @@ fun ExchangeRateTab(
             ) {
                 Text(
                     text = countryCode,
-                    modifier = Modifier.width(45.dp)
+                    fontSize = 20.sp,
+                    modifier = Modifier.wrapContentWidth()
                 )
 
                 VerticalDivider(modifier = Modifier.padding(start = 16.dp))
             }
 
             Text(
-                "1.00",
+                text = conversionRate.toString(),
                 fontSize = 20.sp,
-                modifier = Modifier.padding(end = 100.dp)
+                modifier = Modifier.padding(start = 16.dp)
             )
+
+            Spacer(modifier.weight(1f))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically

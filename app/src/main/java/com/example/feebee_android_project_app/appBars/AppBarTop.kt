@@ -1,4 +1,4 @@
-package com.example.feebee_android_project_app
+package com.example.feebee_android_project_app.appBars
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size

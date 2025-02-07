@@ -15,11 +15,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ConversionTextFieldRow (
-    primaryNum: MutableState<Double>,
-    secondaryNum: MutableState<Double>,
+fun ExchangeRateCardLowerRow (
+    primaryNum: MutableState<String>,
+    secondaryNum: MutableState<String>,
     primaryTextFieldValueChanged: (String) -> Unit,
-    secondaryTextFieldValueChanged: (String) -> Unit,
     modifier: Modifier
 ) {
     Row (
@@ -28,7 +27,7 @@ fun ConversionTextFieldRow (
             .fillMaxWidth().wrapContentWidth(),
     ) {
         TextField(
-            value = primaryNum.value.toString(),
+            value = primaryNum.value,
             onValueChange = primaryTextFieldValueChanged,
             textStyle = TextStyle(fontSize = 16.sp),
             modifier = Modifier.weight(1f)
@@ -38,9 +37,11 @@ fun ConversionTextFieldRow (
 
         TextField(
             value = secondaryNum.value.toString(),
-            onValueChange = secondaryTextFieldValueChanged,
+            readOnly = true,
+            onValueChange = {},
             textStyle = TextStyle(fontSize = 16.sp),
             modifier = Modifier.weight(1f),
         )
+
     }
 }

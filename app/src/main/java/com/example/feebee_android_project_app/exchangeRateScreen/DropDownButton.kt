@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 fun DropDownButton(
     expanded: MutableState<Boolean>,
     selectedCountry: MutableState<String>,
-    options: List<String>,
+    dropDownOptions: List<String>,
     modifier: Modifier
 ) {
     ExposedDropdownMenuBox(
@@ -30,8 +30,13 @@ fun DropDownButton(
     ) {
         TextField(
             value = selectedCountry.value,
-            readOnly = true,
-            onValueChange = {},
+            readOnly = false,
+            minLines = 1,
+            onValueChange = {
+                if (it.length < 4) {
+                    selectedCountry.value = it.uppercase()
+                }
+            },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded.value)
             },
@@ -44,13 +49,13 @@ fun DropDownButton(
             expanded = expanded.value,
             onDismissRequest = { expanded.value = false }
         ) {
-            options.forEachIndexed { index, option ->
+            dropDownOptions.forEachIndexed { index, option ->
                 DropdownMenuItem(
                     text = { Text(option
                     ) },
 
                     onClick = {
-                        selectedCountry.value = options[index]
+                        selectedCountry.value = dropDownOptions[index]
                         expanded.value = false
                     }
                 )

@@ -20,9 +20,11 @@ fun ExchangeRateCardUpperRow (
     secondaryButtonIsExpanded: MutableState<Boolean>,
     primarySelectedOption: MutableState<String>,
     secondarySelectedOption: MutableState<String>,
-    options: List<String>,
     modifier: Modifier
 ) {
+    val dropDownOptions = listOf(
+        "USD", "MMK", "THB", "EUR"
+    )
     Row(
         modifier = modifier
             .padding(top = 25.dp, start = 10.dp, end = 10.dp)
@@ -32,7 +34,7 @@ fun ExchangeRateCardUpperRow (
         DropDownButton(
             expanded = primaryButtonIsExpanded,
             selectedCountry = primarySelectedOption,
-            options = options,
+            dropDownOptions = dropDownOptions,
             modifier = Modifier
         )
 
@@ -49,7 +51,7 @@ fun ExchangeRateCardUpperRow (
         DropDownButton(
             expanded = secondaryButtonIsExpanded,
             selectedCountry = secondarySelectedOption,
-            options = options,
+            dropDownOptions = dropDownOptions,
             modifier = Modifier
         )
     }

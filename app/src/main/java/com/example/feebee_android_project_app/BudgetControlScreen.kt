@@ -10,10 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun HomeScreen(
+fun BudgetControlScreen(
     modifier: Modifier
 ) {
-    Box(modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center)) {
-        Text("HOME SCREEN", fontSize = 30.sp)
+    Box(modifier.fillMaxSize().wrapContentSize(Alignment.Center)) {
+        Text("BUDGET SCREEN", fontSize = 30.sp)
     }
 }
