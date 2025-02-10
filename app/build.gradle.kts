@@ -8,6 +8,7 @@ plugins {
 
     // KTOR Plugin (Serialization)
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10"
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -56,6 +57,12 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    // Firebase Authentication Dependency
+    implementation(libs.firebase.auth)
+
+    // Datastore Preferences Dependency
+    implementation(libs.androidx.datastore.preferences)
+
     // ViewModel Dependency
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
@@ -64,6 +71,8 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
+    // Live Data (used for authState)
+    implementation(libs.androidx.runtime.livedata)
 
     // Navigation Component Dependency
     implementation(libs.androidx.navigation.compose)

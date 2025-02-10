@@ -1,5 +1,7 @@
 package com.example.feebee_android_project_app
 
+import android.app.Application
+import android.util.Log
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -10,17 +12,25 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.feebee_android_project_app.appBars.AppBarBottom
 import com.example.feebee_android_project_app.appBars.AppBarTop
 import com.example.feebee_android_project_app.data.AppScreens
+import com.example.feebee_android_project_app.data.AuthState
+import com.example.feebee_android_project_app.data.UserDetails
 import com.example.feebee_android_project_app.sideNavigationDrawer.SideMenuScreen
 import kotlinx.coroutines.launch
 
@@ -29,6 +39,8 @@ fun MainScreen () {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
     val navController = rememberNavController()
+    val context = LocalContext.current
+    val authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(context.applicationContext as Application))
     val pagerState = rememberPagerState(pageCount = { 4 })
 
     // Navigation Drawer for the main menu
@@ -45,6 +57,7 @@ fun MainScreen () {
                     drawerState = drawerState,
                     navController = navController,
                     coroutineScope = coroutineScope,
+                    userDetails = authViewModel.getUserDetails().collectAsState(initial = UserDetails()),
                     modifier = Modifier
                 )
             }
@@ -52,7 +65,8 @@ fun MainScreen () {
     ) {
         val currentBackStackEntry by navController.currentBackStackEntryAsState()
         val selectedItem = rememberSaveable { mutableIntStateOf(0) }
-        val currentScreen = when (currentBackStackEntry?.destination?.route) {
+        val currentRoute = currentBackStackEntry?.destination?.route
+        val currentScreen = when (currentRoute) {
             AppScreens.Home.route -> AppScreens.Home.title
             AppScreens.ExchangeRate.route -> AppScreens.ExchangeRate.title
             AppScreens.Accounts.route -> AppScreens.Accounts.title
@@ -68,29 +82,35 @@ fun MainScreen () {
         // The content of what's being displayed in the screen
        Scaffold (
            topBar =  {
-               AppBarTop(
-                   currentScreen = currentScreen,
-                   onTopBarIconClicked = {
-                       coroutineScope.launch {
-                           drawerState.open()
-                       }
-                   },
-                   modifier = Modifier
-               )
+               if (currentScreen != "UNDEFINED") {
+                   AppBarTop(
+                       currentScreen = currentScreen,
+                       onTopBarIconClicked = {
+                           coroutineScope.launch {
+                               drawerState.open()
+                           }
+                       },
+                       modifier = Modifier
+                   )
+               }
            },
 
            bottomBar = {
-               AppBarBottom(
-                   selectedItem = selectedItem,
-                   navController = navController,
-                   modifier = Modifier
-               )
+               if (currentScreen != "UNDEFINED") {
+                   AppBarBottom(
+                       selectedItem = selectedItem,
+                       navController = navController,
+                       modifier = Modifier
+                   )
+               }
            }
 
        ) { innerPadding ->
            NavigationGraph(
+               authViewModel = authViewModel,
                navController = navController,
-               contentPadding = innerPadding,
+               isLoggedIn = authViewModel.getLoginStatus().collectAsState(initial = false),
+               contentPadding = innerPadding
            )
        }
     }

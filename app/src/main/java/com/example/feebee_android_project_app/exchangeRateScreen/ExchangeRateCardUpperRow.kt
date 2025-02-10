@@ -39,7 +39,11 @@ fun ExchangeRateCardUpperRow (
         )
 
         IconButton(
-            onClick = {},
+            onClick = {
+                val temp = primarySelectedOption.value
+                primarySelectedOption.value = secondarySelectedOption.value
+                secondarySelectedOption.value = temp
+            },
             modifier = Modifier
         ) {
             Icon(

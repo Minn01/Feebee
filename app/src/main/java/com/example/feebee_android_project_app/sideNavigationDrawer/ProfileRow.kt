@@ -1,7 +1,9 @@
 package com.example.feebee_android_project_app.sideNavigationDrawer
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,6 +26,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProfileRow (
     userName: String,
+    userEmail: String,
     coroutineScope: CoroutineScope,
     navController: NavController,
     drawerState: DrawerState,
@@ -49,9 +52,18 @@ fun ProfileRow (
                 }
         )
 
-        Text(
-            text = userName,
+        Log.d("EA", "EA2 reached")
+
+        Column(
             modifier = Modifier.padding(start = 16.dp)
-        )
+        ) {
+            Text(
+                text = userName,
+            )
+
+            Text(
+                text = userEmail,
+            )
+        }
     }
 }

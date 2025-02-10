@@ -19,4 +19,9 @@ sealed class AppScreens(val route: String, val title: String) {
 
     // This screen is going to be available for both navigation
     data object ExchangeRate: AppScreens("exchangeRate", "Exchange Rate")
+
+    // Initial Setup Screens
+    data object Signup: AppScreens("signup", "Signup")
+    data object Login: AppScreens("login", "Login")
+    data object Loading: AppScreens("loading", "loading")
 }
