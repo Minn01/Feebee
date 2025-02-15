@@ -4,9 +4,12 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.compose) apply false
 
-    // Room Plugin (project)
+    // Room Plugin (project-level)
     id("com.google.devtools.ksp") version "2.0.21-1.0.27" apply false
 
-    // From Firebase (project-level)
+    // For Firebase and Fire Store (project-level)
     alias(libs.plugins.google.gms.google.services) apply false
+
+    // Dagger Hilt (project-level)
+    id("com.google.dagger.hilt.android") version "2.51.1" apply false
 }

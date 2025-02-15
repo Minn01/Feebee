@@ -1,4 +1,4 @@
-package com.example.feebee_android_project_app.exchangeRateScreen
+package com.example.feebee_android_project_app
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.DropdownMenuItem
@@ -12,15 +12,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.Dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DropDownButton(
     expanded: MutableState<Boolean>,
-    selectedCountry: MutableState<String>,
+    selectedOption: MutableState<String>,
     dropDownOptions: List<String>,
+    readOnly: Boolean = true,
+    onValueChange: (String) -> Unit = {},
+    width: Dp,
+    height: Dp,
+    textStyle: TextStyle,
     modifier: Modifier
 ) {
     ExposedDropdownMenuBox(
@@ -29,20 +33,16 @@ fun DropDownButton(
         modifier = modifier
     ) {
         TextField(
-            value = selectedCountry.value,
-            readOnly = false,
+            value = selectedOption.value,
+            readOnly = readOnly,
             minLines = 1,
-            onValueChange = {
-                if (it.length < 4) {
-                    selectedCountry.value = it.uppercase()
-                }
-            },
+            onValueChange = onValueChange,
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded.value)
             },
             colors = ExposedDropdownMenuDefaults.textFieldColors(),
-            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, true).size(width = 130.dp, height = 50.dp),
-            textStyle = TextStyle(fontSize = 16.sp)
+            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, true).size(width = width, height = height),
+            textStyle = textStyle
         )
 
         ExposedDropdownMenu(
@@ -55,7 +55,7 @@ fun DropDownButton(
                     ) },
 
                     onClick = {
-                        selectedCountry.value = dropDownOptions[index]
+                        selectedOption.value = dropDownOptions[index]
                         expanded.value = false
                     }
                 )

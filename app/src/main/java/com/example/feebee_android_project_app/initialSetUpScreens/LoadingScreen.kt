@@ -1,4 +1,4 @@
-package com.example.feebee_android_project_app
+package com.example.feebee_android_project_app.initialSetUpScreens
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box

@@ -11,7 +11,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.feebee_android_project_app.DropDownButton
 import com.example.feebee_android_project_app.R
 
 @Composable
@@ -33,9 +36,18 @@ fun ExchangeRateCardUpperRow (
     ) {
         DropDownButton(
             expanded = primaryButtonIsExpanded,
-            selectedCountry = primarySelectedOption,
+            selectedOption = primarySelectedOption,
             dropDownOptions = dropDownOptions,
-            modifier = Modifier
+            modifier = Modifier,
+            readOnly = false,
+            onValueChange = {
+                if (it.length < 4) {
+                    primarySelectedOption.value = it.uppercase()
+                }
+            },
+            width = 130.dp,
+            height = 50.dp,
+            textStyle = TextStyle(fontSize = 16.sp)
         )
 
         IconButton(
@@ -54,8 +66,11 @@ fun ExchangeRateCardUpperRow (
 
         DropDownButton(
             expanded = secondaryButtonIsExpanded,
-            selectedCountry = secondarySelectedOption,
+            selectedOption = secondarySelectedOption,
             dropDownOptions = dropDownOptions,
+            width = 130.dp,
+            height = 50.dp,
+            textStyle = TextStyle(fontSize = 16.sp),
             modifier = Modifier
         )
     }

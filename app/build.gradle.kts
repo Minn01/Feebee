@@ -3,11 +3,16 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 
-    // Room Plugin (module)
+    // ksp Plugin for Room (module)
     id("com.google.devtools.ksp")
 
     // KTOR Plugin (Serialization)
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10"
+
+    // kapt and Dagger Hilt Plugin
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
+
     alias(libs.plugins.google.gms.google.services)
 }
 
@@ -57,8 +62,16 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    // Dagger Hilt Dependency
+    implementation(libs.hilt.android.v2511)
+    implementation(libs.androidx.hilt.navigation.compose)
+    kapt(libs.hilt.android.compiler)
+
     // Firebase Authentication Dependency
     implementation(libs.firebase.auth)
+
+    // Fire Store Dependency
+    implementation(libs.firebase.firestore)
 
     // Datastore Preferences Dependency
     implementation(libs.androidx.datastore.preferences)
@@ -113,4 +126,9 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
 }

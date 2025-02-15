@@ -1,4 +1,4 @@
-package com.example.feebee_android_project_app
+package com.example.feebee_android_project_app.initialSetUpScreens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.feebee_android_project_app.AuthViewModel
 import com.example.feebee_android_project_app.data.AppScreens
 
 @Composable

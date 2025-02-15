@@ -18,44 +18,81 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun ColorSchemeBox(
     modifier: Modifier
 ) {
-    CustomToggleButton(modifier = Modifier)
+    val isChecked = rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    CustomToggleButton(
+        modifier = modifier.padding(start = 16.dp, end = 16.dp),
+        mode1Text = "Light",
+        mode2Text = "Dark",
+        thumbOffSetX1 = 160.dp,
+        thumbOffSetX2 = 30.dp,
+        thumbOffSetY = 7.dp,
+        outerBoxHeight = 60.dp,
+        isChecked = isChecked,
+        toggleButtonClicked = { isChecked.value = !isChecked.value },
+        backgroundColor = Color(0xFF18202E),
+        buttonShadeColor = Color(0xFF29303C).copy(alpha = 0.7f),
+        mode1ContentDescription = "light_mode",
+        mode2ContentDescription = "dark_mode",
+        innerBoxWidth = 150.dp,
+        innerBoxHeight = 43.dp,
+    )
 }
 
 @Composable
 fun CustomToggleButton(
+    mode1Text: String,
+    mode2Text: String,
+    thumbOffSetX1: Dp,
+    thumbOffSetX2: Dp,
+    thumbOffSetY: Dp,
+    outerBoxHeight: Dp,
+    innerBoxWidth: Dp,
+    innerBoxHeight: Dp,
+    isChecked: MutableState<Boolean>,
+    iconEnabled: Boolean = true,
+    mode1Icon: ImageVector = Icons.Default.Check,
+    mode2Icon: ImageVector = Icons.Default.Clear,
+    toggleButtonClicked: () -> Unit,
+    backgroundColor: Color,
+    buttonShadeColor: Color,
+    shape: Shape = RoundedCornerShape(50),
+    mode1ContentDescription: String = "mode1",
+    mode2ContentDescription: String = "mode2",
     modifier: Modifier
 ) {
-    val isChecked = rememberSaveable { mutableStateOf(false) }
-
     val thumbOffsetX by animateDpAsState(
-        targetValue = if (isChecked.value) 160.dp else 30.dp,
+        targetValue = if (isChecked.value) thumbOffSetX1 else thumbOffSetX2,
         label = "switch_animation"
     )
 
-    val thumbOffSetY = 7.dp
 
     // Outer box
     Box(
         modifier = modifier
-            .padding(start = 16.dp, end = 16.dp)
-            .height(60.dp)
-            .clickable { isChecked.value = !isChecked.value }
+            .height(outerBoxHeight)
+            .clickable(onClick = toggleButtonClicked)
             .background(
-                color = Color(0xFF18202E),
-                shape = RoundedCornerShape(50)
+                color = backgroundColor,
+                shape = shape
             )
             .offset(x = thumbOffsetX, y = thumbOffSetY),
     ) {
@@ -63,10 +100,10 @@ fun CustomToggleButton(
         // Inner box with offset
         Box(
             modifier = Modifier
-                .size(150.dp, 43.dp) // Adjusted size
+                .size(innerBoxWidth, innerBoxHeight) // Adjusted size
                 .background(
-                    color = Color(0xFF29303C).copy(alpha = 0.7f),
-                    shape = RoundedCornerShape(50)
+                    color = buttonShadeColor,
+                    shape = shape
                 )
         )
 
@@ -79,16 +116,18 @@ fun CustomToggleButton(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             ModeRow(
-                modeText = "Light",
-                modeIcon = Icons.Default.Check,
-                modeContentDescription = "light_mode",
-                modifier = Modifier
+                modeText = mode1Text,
+                modeIcon = mode1Icon,
+                modeContentDescription = mode1ContentDescription,
+                iconEnabled = iconEnabled,
+                modifier = Modifier,
             )
 
             ModeRow(
-                modeText = "Dark",
-                modeIcon = Icons.Default.Clear,
-                modeContentDescription = "dark_mode",
+                modeText = mode2Text,
+                modeIcon = mode2Icon,
+                modeContentDescription = mode2ContentDescription,
+                iconEnabled = iconEnabled,
                 modifier = Modifier
             )
         }
@@ -97,17 +136,20 @@ fun CustomToggleButton(
 
 @Composable
 fun ModeRow(
+    iconEnabled: Boolean,
     modeText: String,
     modeIcon: ImageVector,
     modeContentDescription: String,
     modifier: Modifier
 ) {
     Row(modifier) {
-        Icon(
-            imageVector = modeIcon,
-            contentDescription = modeContentDescription,
-            tint = Color.White
-        )
+        if (iconEnabled) {
+            Icon(
+                imageVector = modeIcon,
+                contentDescription = modeContentDescription,
+                tint = Color.White
+            )
+        }
 
         Text(
             modeText,

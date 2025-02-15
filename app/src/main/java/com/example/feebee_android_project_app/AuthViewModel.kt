@@ -1,8 +1,5 @@
 package com.example.feebee_android_project_app
 
-import android.app.Application
-import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,14 +8,16 @@ import com.example.feebee_android_project_app.data.AuthState
 import com.example.feebee_android_project_app.data.DataStoreManager
 import com.example.feebee_android_project_app.data.UserDetails
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.UserProfileChangeRequest
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AuthViewModel(application: Application): AndroidViewModel(application) {
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val dataStoreManager = DataStoreManager(application.applicationContext)
-
+@HiltViewModel
+class AuthViewModel @Inject constructor(
+    private val auth: FirebaseAuth,
+    private val dataStoreManager: DataStoreManager
+): ViewModel() {
     private val _authState = MutableLiveData<AuthState>()
     val authState: LiveData<AuthState> = _authState
 
@@ -81,8 +80,23 @@ class AuthViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
+    fun checkTokenValidity() {
+        val user = auth.currentUser
+        user?.getIdToken(true)?.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                // Token is invalid or expired, log the user out
+                signOut()
+            }
+        }
+    }
+
+
     fun signOut() {
         auth.signOut()
+        viewModelScope.launch {
+            dataStoreManager.setLoginStatus(false)
+        }
+        _authState.postValue(AuthState.UnAuthenticated)
     }
 
     fun getUserDetails(): Flow<UserDetails> {
