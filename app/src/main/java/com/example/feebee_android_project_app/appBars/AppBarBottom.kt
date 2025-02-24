@@ -6,15 +6,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import com.example.feebee_android_project_app.R
 import com.example.feebee_android_project_app.data.AppScreens
+import com.example.feebee_android_project_app.data.darkModeColors
+import com.example.feebee_android_project_app.data.lightModeColors
 
 @Composable
 fun AppBarBottom(
+    appTheme: State<String>,
     selectedItem: MutableIntState,
+    selectedTab: MutableIntState,
     navController: NavController,
     modifier: Modifier
 ) {
@@ -47,6 +53,7 @@ fun AppBarBottom(
                             iconLabel = itemPair.second,
                             isSelected = selectedItem.intValue == index,
                             onButtonClicked = {
+                                selectedTab.intValue = 0
                                 selectedItem.intValue = index
                                 navController.navigate(itemPair.second)
                             },
@@ -56,6 +63,7 @@ fun AppBarBottom(
                 }
             }
         },
+        containerColor = if (appTheme.value == "dark") darkModeColors.barColor else lightModeColors.barColor,
         modifier = modifier
     )
 }

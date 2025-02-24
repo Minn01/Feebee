@@ -19,6 +19,7 @@ fun DateRow(
     buttonExpanded: MutableState<Boolean>,
     selectedOption: MutableState<String>,
     buttonOptions: List<String>,
+    onDropDownButtonClicked: (() -> Unit)? = null,
     modifier: Modifier
 ) {
     Row(
@@ -38,6 +39,7 @@ fun DateRow(
             width = 150.dp,
             height = 50.dp,
             textStyle = TextStyle(fontSize = 16.sp),
+            onDropDownButtonClicked = onDropDownButtonClicked,
             modifier = Modifier
         )
 

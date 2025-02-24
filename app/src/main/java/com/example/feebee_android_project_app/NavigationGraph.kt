@@ -12,8 +12,10 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.feebee_android_project_app.accountScreens.AccountMainScreen
 import com.example.feebee_android_project_app.accountScreens.SingleAccountScreen
 import com.example.feebee_android_project_app.initialSetUpScreens.LoadingScreen
@@ -68,9 +70,14 @@ fun NavigationGraph(
         }
 
         composable(
-            "account/{account_id}"
-        ) {
-            SingleAccountScreen(Modifier.padding(contentPadding))
+            route = "account/{accountId}",
+            arguments = listOf(navArgument("accountId") { NavType.IntType })
+        ) { backStackEntry ->
+            val accountId = backStackEntry.arguments?.getInt("accountId") ?: -1
+            SingleAccountScreen(
+                accountId = accountId,
+                Modifier.padding(contentPadding)
+            )
         }
 
         composable(

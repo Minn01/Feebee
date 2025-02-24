@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -14,6 +15,10 @@ import androidx.constraintlayout.compose.ConstraintLayout
 
 @Composable
 fun OverViewCard(
+    numOfAccounts: State<Int>,
+    totalAcrossAccounts: State<Double>,
+    incomeAcrossAccountsToday: State<Double>,
+    expenseAcrossAccountsToday: State<Double>,
     modifier: Modifier
 ) {
     ElevatedCard(
@@ -23,7 +28,7 @@ fun OverViewCard(
             val (accountNumText, totalOverallTextCol, doubleCol) = createRefs()
             val startGuideLine = createGuidelineFromStart(20.dp)
             Text(
-                "Accounts: 100",
+                "Accounts: ${numOfAccounts.value}",
                 fontSize = 20.sp,
                 modifier = Modifier.constrainAs(accountNumText) {
                     start.linkTo(startGuideLine)
@@ -43,7 +48,7 @@ fun OverViewCard(
                     modifier = Modifier.padding(bottom = 10.dp)
                 )
                 Text(
-                    "100000",
+                    "${totalAcrossAccounts.value}",
                     fontSize = 35.sp,
                     modifier = Modifier
                 )
@@ -53,19 +58,19 @@ fun OverViewCard(
                 modifier = Modifier.constrainAs(doubleCol) {
                     top.linkTo(accountNumText.bottom, 20.dp)
                     start.linkTo(totalOverallTextCol.end, 40.dp)
-                    end.linkTo(parent.end, 20.dp)
+                    end.linkTo(parent.end, 10.dp)
                 }
             ) {
                 Column(
                     modifier = Modifier.padding(bottom = 10.dp)
                 ) {
                     Text("Income Today:", fontSize = 20.sp)
-                    Text("1000000")
+                    Text("${incomeAcrossAccountsToday.value}")
                 }
 
                 Column {
                     Text("Expense Today:", fontSize = 20.sp)
-                    Text("1000000")
+                    Text("${expenseAcrossAccountsToday.value}")
                 }
             }
         }

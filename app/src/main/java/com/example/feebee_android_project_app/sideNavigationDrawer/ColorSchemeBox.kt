@@ -1,5 +1,6 @@
 package com.example.feebee_android_project_app.sideNavigationDrawer
 
+import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,6 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -29,13 +31,21 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.feebee_android_project_app.data.darkModeColors
+import com.example.feebee_android_project_app.data.lightModeColors
 
 @Composable
 fun ColorSchemeBox(
+    appTheme: State<String>,
+    toggleButtonClicked: () -> Unit,
     modifier: Modifier
 ) {
-    val isChecked = rememberSaveable {
-        mutableStateOf(false)
+    val isChecked = rememberSaveable { mutableStateOf(false) }
+
+    isChecked.value = when (appTheme.value) {
+        "dark"-> true
+        "light" -> false
+        else -> appTheme.value == "dark"
     }
 
     CustomToggleButton(
@@ -47,9 +57,12 @@ fun ColorSchemeBox(
         thumbOffSetY = 7.dp,
         outerBoxHeight = 60.dp,
         isChecked = isChecked,
-        toggleButtonClicked = { isChecked.value = !isChecked.value },
-        backgroundColor = Color(0xFF18202E),
-        buttonShadeColor = Color(0xFF29303C).copy(alpha = 0.7f),
+        toggleButtonClicked = {
+            toggleButtonClicked()
+            isChecked.value = !isChecked.value
+        },
+        backgroundColor = if (appTheme.value == "dark") darkModeColors.buttonColor else lightModeColors.buttonColor,
+        buttonShadeColor = (if (appTheme.value == "dark") darkModeColors.buttonShadeColor else lightModeColors.buttonShadeColor).copy(alpha = 0.7f),
         mode1ContentDescription = "light_mode",
         mode2ContentDescription = "dark_mode",
         innerBoxWidth = 150.dp,

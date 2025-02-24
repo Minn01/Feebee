@@ -48,4 +48,14 @@ class DataStoreManager(val context: Context) {
     suspend fun clearDataFromDataStore() = context.preferenceDataStore.edit { storedData ->
         storedData.clear()
     }
+
+    fun getAppThemeFromDataStore() = context.preferenceDataStore.data.map {
+        it[APP_THEME_MODE] ?: "light"
+    }
+
+    suspend fun setAppTheme(theme: String) {
+        context.preferenceDataStore.edit { storedData ->
+            storedData[APP_THEME_MODE] = theme
+        }
+    }
 }

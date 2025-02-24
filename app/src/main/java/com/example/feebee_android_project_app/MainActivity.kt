@@ -19,11 +19,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-//@Preview
-//@Composable
-//fun PreviewScreen() {
-//    Feebee_Android_Project_AppTheme {
-//        MainScreen()
-//    }
-//}

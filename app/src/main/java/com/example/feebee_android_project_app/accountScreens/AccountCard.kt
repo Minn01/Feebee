@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -17,9 +17,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.feebee_android_project_app.data.Account
 
 @Composable
 fun AccountCard(
+    account: Account,
     onAccountClicked: () -> Unit,
     modifier: Modifier
 ) {
@@ -35,9 +37,9 @@ fun AccountCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = Icons.Default.AccountBox,
+                imageVector = Icons.Filled.AccountCircle,
                 contentDescription = null,
-                modifier = Modifier.size(150.dp).padding()
+                modifier = Modifier.size(100.dp).padding()
             )
 
             Column(
@@ -45,11 +47,11 @@ fun AccountCard(
                 modifier = Modifier.padding(end = 20.dp)
             ) {
                 Text(
-                    "Account Name",
+                    account.accountName,
                     fontSize = 30.sp,
                 )
-                Text("Savings : 1341341", fontSize = 18.sp)
-                Text("Budget Status: cool", fontSize = 18.sp)
+                Text("Savings : ${account.accountBalance}", fontSize = 18.sp)
+                Text("created: ${account.createdDate}", fontSize = 18.sp)
             }
         }
     }

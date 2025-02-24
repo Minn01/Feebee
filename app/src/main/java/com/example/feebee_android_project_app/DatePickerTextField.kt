@@ -1,94 +1,174 @@
 package com.example.feebee_android_project_app
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material3.Button
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerState
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerTextField(
-    showDatePicker: MutableState<Boolean>,
-    datePickerState: DatePickerState,
-    selectedDate: String,
+    dateString: MutableState<String>,
+    context: Context,
+    yearSelected: MutableState<String>,
+    monthSelected: MutableState<String>,
+    dateRangeSelected: MutableState<String>,
+    onButtonClicked: () -> Unit,
     modifier: Modifier
 ) {
+    val showDatePicker = rememberSaveable { mutableStateOf(false) }
+    val keyBoardController = LocalSoftwareKeyboardController.current
+
     OutlinedTextField(
-        value = selectedDate,
-        onValueChange = { },
+        value = dateString.value,
         label = { Text("DD/MM/YYYY") },
-        readOnly = true,
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        keyboardActions = KeyboardActions(
+            onDone = {
+                // Pressing Enter on text field
+                try {
+                    val parsedDate = parseDate(dateString.value)
+                    if (parsedDate != null) {
+                        yearSelected.value = parsedDate.year.toString()
+                        monthSelected.value = parsedDate.month.toString()
+                    }
+                    keyBoardController?.hide()
+                } catch (e: Exception) {
+                    Toast.makeText(context, "Wrong Format Try Again", Toast.LENGTH_SHORT).show()
+                }
+            }
+        ),
         trailingIcon = {
-            IconButton(onClick = { showDatePicker.value = true }) {
-                Icon(
-                    imageVector = Icons.Default.DateRange,
-                    contentDescription = "Select date"
-                )
+            IconButton(
+                onClick = {
+                    showDatePicker.value = true
+                }
+            ) {
+                Icon(imageVector = Icons.Default.DateRange, contentDescription = "date_range_icon")
             }
         },
-        modifier = modifier
-            .fillMaxWidth()
-            .height(64.dp)
+        onValueChange = {
+            dateString.value = it
+            yearSelected.value = "All"
+            monthSelected.value = "All"
+        },
+        modifier = modifier.fillMaxWidth()
     )
 
     if (showDatePicker.value) {
-        Dialog (onDismissRequest = { showDatePicker.value = false }) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentSize(Alignment.Center)
-                    .shadow(8.dp, shape = RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(12.dp))
-                    .padding(16.dp)
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    DatePicker(
-                        state = datePickerState,
-                        showModeToggle = false
-                    )
+        DateRangePickerModal(
+            dateString = dateString,
+            context = context,
+            onDismiss = {
+                showDatePicker.value = false
+            },
+            onButtonClicked = onButtonClicked,
+            dateRange = dateRangeSelected,
+        )
+    }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+}
 
-                    Button(
-                        onClick = { showDatePicker.value = false },
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    ) {
-                        Text("OK")
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DateRangePickerModal(
+    dateString: MutableState<String>,
+    context: Context,
+    dateRange: MutableState<String>,
+    onButtonClicked: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    val dateRangePickerState = rememberDateRangePickerState()
+
+    DatePickerDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    try {
+                        dateRange.value = formatDateRange(
+                            dateRangePickerState.selectedStartDateMillis,
+                            dateRangePickerState.selectedEndDateMillis
+                        )
+                        dateString.value = dateRange.value
+                    } catch (e: Exception) {
+                        Toast.makeText(context, "Error Please Try Again", Toast.LENGTH_SHORT).show()
                     }
+                    onButtonClicked()
+                    onDismiss()
                 }
+            ) {
+                Text("OK")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
             }
         }
+    ) {
+        DateRangePicker(
+            state = dateRangePickerState,
+            title = {
+                Text(
+                    text = "Select date range",
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            },
+            showModeToggle = false,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(500.dp)
+                .padding(16.dp)
+        )
     }
 }
 
-fun convertMillisToDate(millis: Long): String {
-    val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
-    return formatter.format(Date(millis))
+fun parseDate(dateString: String): LocalDate? {
+    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    return LocalDate.parse(dateString, formatter)
+}
+
+fun formatDateRange(startMillis: Long?, endMillis: Long?): String {
+    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+
+    val startDate = startMillis?.let {
+        Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate().format(formatter)
+    } ?: "N/A"
+
+    val endDate = endMillis?.let {
+        Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate().format(formatter)
+    } ?: "N/A"
+
+    if (endDate == "N/A") {
+        return startDate
+    }
+
+    return "$startDate-$endDate"
 }

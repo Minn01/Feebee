@@ -28,7 +28,7 @@ fun BottomNavButton(
     modifier: Modifier
 ) {
     val contentColor by animateColorAsState(
-        targetValue = if (isSelected) Color.Black else Color.Gray,
+        targetValue = if (isSelected) Color.White else Color.LightGray,
         animationSpec = tween(
             durationMillis = 300,
             easing = FastOutSlowInEasing

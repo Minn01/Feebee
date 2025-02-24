@@ -5,43 +5,83 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.feebee_android_project_app.data.Account
+import com.example.feebee_android_project_app.data.RoomViewModel
 
 @Composable
 fun AccountMainScreen(
     navController: NavController,
     modifier: Modifier
 ) {
+    val roomViewModel: RoomViewModel = hiltViewModel()
+    val numOfAccounts = roomViewModel.numOfAccounts.collectAsState()
+    val accountList = roomViewModel.accountList.collectAsState()
+    val totalAcrossAccounts = roomViewModel.totalAcrossAccounts.collectAsState()
+    val incomeAcrossAccountsToday = roomViewModel.incomeAcrossAccountsToday.collectAsState()
+    val expenseAcrossAccountsToday = roomViewModel.expenseAcrossAccountsToday.collectAsState()
+    var showDialog by rememberSaveable { mutableStateOf(false) }
+
     LazyColumn(
-        modifier = modifier.fillMaxWidth().padding(top = 20.dp, start = 16.dp, end = 16.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 20.dp, start = 16.dp, end = 16.dp)
     ) {
         item {
             OverViewCard(
+                numOfAccounts = numOfAccounts,
+                totalAcrossAccounts = totalAcrossAccounts,
+                incomeAcrossAccountsToday = incomeAcrossAccountsToday,
+                expenseAcrossAccountsToday = expenseAcrossAccountsToday,
                 modifier = Modifier
             )
 
             Button(
-                onClick = {},
+                onClick = { showDialog = true },
                 modifier = Modifier.padding(top = 16.dp, bottom = 20.dp)
             ) {
-                Box(modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally)) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentWidth(Alignment.CenterHorizontally)
+                ) {
                     Text("add account")
                 }
             }
         }
 
-        items(5) {
+        items(accountList.value) { account ->
             AccountCard(
-                onAccountClicked = { navController.navigate("account/1") },
-                Modifier
+                account = account,
+                onAccountClicked = { navController.navigate("account/${account.accountId}") },
+                modifier = Modifier // Explicitly label the modifier for clarity.
             )
         }
+    }
 
+    // Show the dialog if triggered
+    if (showDialog) {
+        AccountDialog(
+            onDismiss = { showDialog = false }
+        ) { newAccount ->
+            roomViewModel.insertAccount(newAccount)
+            showDialog = false
+        }
     }
 }

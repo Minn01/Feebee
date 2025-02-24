@@ -10,6 +10,8 @@ import com.example.feebee_android_project_app.data.UserDetails
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,8 +23,12 @@ class AuthViewModel @Inject constructor(
     private val _authState = MutableLiveData<AuthState>()
     val authState: LiveData<AuthState> = _authState
 
+    private val _themeState = MutableStateFlow("")
+    val themeState: StateFlow<String> = _themeState
+
     init {
         checkAuthStatus()
+        getAppTheme()
     }
 
     fun checkAuthStatus() {
@@ -105,5 +111,19 @@ class AuthViewModel @Inject constructor(
 
     fun getLoginStatus(): Flow<Boolean> {
         return dataStoreManager.confirmLoginStatus()
+    }
+
+    fun getAppTheme() {
+        viewModelScope.launch {
+            dataStoreManager.getAppThemeFromDataStore().collect {
+                _themeState.value = it
+            }
+        }
+    }
+
+    fun setAppTheme(theme: String) {
+        viewModelScope.launch {
+            dataStoreManager.setAppTheme(theme)
+        }
     }
 }

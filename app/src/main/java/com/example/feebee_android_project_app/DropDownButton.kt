@@ -22,6 +22,8 @@ fun DropDownButton(
     dropDownOptions: List<String>,
     readOnly: Boolean = true,
     onValueChange: (String) -> Unit = {},
+    onDropDownButtonClicked: (() -> Unit)? = null,
+    dropDownLabel: @Composable () -> Unit = {},
     width: Dp,
     height: Dp,
     textStyle: TextStyle,
@@ -36,6 +38,7 @@ fun DropDownButton(
             value = selectedOption.value,
             readOnly = readOnly,
             minLines = 1,
+            label = dropDownLabel,
             onValueChange = onValueChange,
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded.value)
@@ -57,6 +60,9 @@ fun DropDownButton(
                     onClick = {
                         selectedOption.value = dropDownOptions[index]
                         expanded.value = false
+                        if (onDropDownButtonClicked != null) {
+                            onDropDownButtonClicked()
+                        }
                     }
                 )
             }

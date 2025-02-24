@@ -12,14 +12,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.feebee_android_project_app.data.darkModeColors
+import com.example.feebee_android_project_app.data.lightModeColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBarTop(
     currentScreen: String,
+    appTheme: State<String>,
     onTopBarIconClicked: () -> Unit,
     modifier: Modifier
 ) {
@@ -44,7 +49,7 @@ fun AppBarTop(
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary,
+            containerColor = if (appTheme.value == "dark") darkModeColors.barColor else lightModeColors.barColor,
             scrolledContainerColor = MaterialTheme.colorScheme.surface,
             navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
             titleContentColor = MaterialTheme.colorScheme.onPrimary,
