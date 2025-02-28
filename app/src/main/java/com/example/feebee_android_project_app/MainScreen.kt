@@ -12,6 +12,7 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -39,7 +40,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen (
-    authViewModel: AuthViewModel = hiltViewModel()
+    authViewModel: AuthViewModel = hiltViewModel(),
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
@@ -47,7 +48,6 @@ fun MainScreen (
     val appTheme = authViewModel.themeState.collectAsState()
     authViewModel.getAppTheme()
     val selectedTab = rememberSaveable { mutableIntStateOf(0) }
-
     val roomViewModel: RoomViewModel = hiltViewModel()
     val accountsList = roomViewModel.accountList.collectAsState()
     val selectedIndex = rememberSaveable { mutableIntStateOf(0) }

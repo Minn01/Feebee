@@ -46,6 +46,18 @@ class DataStoreManager(val context: Context) {
         it[BASED_CURRENCY] ?: "USD"
     }
 
+    suspend fun saveBasedCurrency(basedCurrency: String) {
+        context.preferenceDataStore.edit { storedData ->
+            storedData[BASED_CURRENCY] = basedCurrency
+        }
+    }
+
+    suspend fun saveAppTheme(appTheme: String) {
+        context.preferenceDataStore.edit { storedData ->
+            storedData[APP_THEME_MODE] = appTheme
+        }
+    }
+
     fun confirmLoginStatus() = context.preferenceDataStore.data.map {
         it[IS_LOGGED_IN] ?: false
     }

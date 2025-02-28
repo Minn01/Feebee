@@ -1,5 +1,6 @@
 package com.example.feebee_android_project_app
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val auth: FirebaseAuth,
-    private val dataStoreManager: DataStoreManager
+    private val dataStoreManager: DataStoreManager,
+    private val firestoreRepository: FirestoreRepository
 ): ViewModel() {
     private val _authState = MutableLiveData<AuthState>()
     val authState: LiveData<AuthState> = _authState
@@ -54,15 +56,17 @@ class AuthViewModel @Inject constructor(
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     _authState.value = AuthState.Authenticated
+                    viewModelScope.launch {
+                        dataStoreManager.setLoginStatus(true)
+                        firestoreRepository.fetchAllDataFromFireStore(email) {
+                            Log.d("loginFetch", "Firestore data fetched after login")
+                        }
+                    }
                 } else {
                     _authState.value =
                         AuthState.Error(task.exception?.message ?: "Something went wrong")
                 }
             }
-
-        viewModelScope.launch {
-            dataStoreManager.setLoginStatus(true)
-        }
     }
 
     fun signup(userName: String, email: String, password: String) {
@@ -76,16 +80,15 @@ class AuthViewModel @Inject constructor(
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     _authState.value = AuthState.Authenticated
+                    viewModelScope.launch {
+                        dataStoreManager.saveToUserDataStore(UserDetails(email, userName))
+                        dataStoreManager.setLoginStatus(true)
+                    }
                 } else {
                     _authState.value =
                         AuthState.Error(task.exception?.message ?: "Something went wrong")
                 }
             }
-
-        viewModelScope.launch {
-            dataStoreManager.saveToUserDataStore(UserDetails(email, userName))
-            dataStoreManager.setLoginStatus(true)
-        }
     }
 
     fun checkTokenValidity() {

@@ -12,7 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.feebee_android_project_app.FireStoreViewModel
 import com.example.feebee_android_project_app.data.AppScreens
 import com.example.feebee_android_project_app.data.AuthState
 import kotlinx.coroutines.delay
@@ -20,7 +22,8 @@ import kotlinx.coroutines.delay
 @Composable
 fun LoadingScreen(
     navController: NavController,
-    authState: AuthState
+    authState: AuthState,
+    fireStoreViewModel: FireStoreViewModel = hiltViewModel()
 ) {
     val timeoutMillis = 20_000L // Timeout after 20 seconds
     val contextForToast = LocalContext.current
@@ -28,6 +31,7 @@ fun LoadingScreen(
     LaunchedEffect(authState) {
         when (authState) {
             is AuthState.Authenticated -> {
+                fireStoreViewModel.fetchAllDataFromFireStore()
                 navController.navigate(AppScreens.Home.route) {
                     popUpTo("loading") { inclusive = true }
                 }

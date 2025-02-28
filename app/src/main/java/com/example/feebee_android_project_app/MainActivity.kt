@@ -17,6 +17,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // 🔥 Save data when app goes to the background
         lifecycle.addObserver(AppLifecycleListener { _ ->
             fireStoreViewModel.saveAllDataToFireStore()
         })
