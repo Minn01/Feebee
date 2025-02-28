@@ -65,11 +65,7 @@ fun ExchangeRateTab(
                 Icon(
                     painter = painterResource(R.drawable.exchange_rate_icon_dark),
                     contentDescription = null, // status_icon
-                    modifier = Modifier.padding(end = 10.dp)
-                )
-                Text(
-                    "1.00",
-                    modifier = Modifier.padding(end = 20.dp)
+                    modifier = Modifier.padding(end = 16.dp)
                 )
             }
         }

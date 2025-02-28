@@ -1,5 +1,6 @@
 package com.example.feebee_android_project_app.appBars
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import com.example.feebee_android_project_app.R
+import com.example.feebee_android_project_app.TransactionBottomSheet
+import com.example.feebee_android_project_app.accountScreens.addTransaction
+import com.example.feebee_android_project_app.accountScreens.removeDateState
 import com.example.feebee_android_project_app.data.AppScreens
 import com.example.feebee_android_project_app.data.darkModeColors
 import com.example.feebee_android_project_app.data.lightModeColors
@@ -43,7 +47,6 @@ fun AppBarBottom(
                         QuickActionButton(
                             iconLabel = itemPair.second,
                             onButtonClicked = {
-                                navController.navigate(itemPair.second)
                             },
                             modifier = Modifier
                         )

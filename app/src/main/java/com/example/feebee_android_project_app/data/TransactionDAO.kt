@@ -24,23 +24,30 @@ interface TransactionDAO {
     )
     fun getAllTransactionsFromAccount(accountId: Int, transactionType: String): Flow<List<Transaction>>
 
-    // Fetch transactions within a specific year
+    // Fetch transactions for a certain month
     @Query(
-        "SELECT * FROM `TRANSACTION` WHERE accountId = :accountId AND transactionType = :transactionType AND strftime('%Y', createdDate) = strftime('%Y', :year)"
-    )
-    fun getTransactionWithinYear(accountId: Int, transactionType: String, year: LocalDate): Flow<List<Transaction>>
+    """
+    SELECT * FROM `TRANSACTION` 
+    WHERE accountId = :accountId 
+    AND transactionType = :transactionType 
+    AND strftime('%Y', createdDate) = :year
+    """
+    ) fun getTransactionWithinYear(accountId: Int, transactionType: String, year: String): Flow<List<Transaction>>
 
-    // Fetch transactions within a specific month
+    // For month, your query needs to look for just the month part
     @Query(
-        "SELECT * FROM `TRANSACTION` WHERE accountId = :accountId AND transactionType = :transactionType AND strftime('%Y-%m', createdDate) = strftime('%Y-%m', :month)"
-    )
-    fun getTransactionWithinMonth(accountId: Int, transactionType: String, month: LocalDate): Flow<List<Transaction>>
+    """
+    SELECT * FROM `TRANSACTION` 
+    WHERE accountId = :accountId 
+    AND transactionType = :transactionType 
+    AND strftime('%m', createdDate) = :month
+    """
+    ) fun getTransactionWithinMonth(accountId: Int, transactionType: String, month: String): Flow<List<Transaction>>
 
     // Fetch transactions of a specific date
     @Query(
         "SELECT * FROM `TRANSACTION` WHERE accountId = :accountId AND transactionType = :transactionType AND createdDate = :date"
-    )
-    fun getTransactionOfDate(accountId: Int, transactionType: String, date: LocalDate): Flow<List<Transaction>>
+    ) fun getTransactionOfDate(accountId: Int, transactionType: String, date: LocalDate): Flow<List<Transaction>>
 
     @Query(
         """
@@ -86,4 +93,17 @@ interface TransactionDAO {
         startDate: LocalDate,
         endDate: LocalDate
     ): Flow<List<Transaction>>
+
+    @Query(
+    """
+    SELECT * FROM `TRANSACTION` 
+    WHERE accountId = :accountId 
+    AND transactionType = :type 
+    AND strftime('%Y', createdDate) = :year 
+    AND strftime('%m', createdDate) = :month
+    """
+    ) fun getTransactionsByYearAndMonth(accountId: Int, type: String, year: String, month: String): Flow<List<Transaction>>
+
+    @Query("SELECT * FROM `TRANSACTION` WHERE transactionId = :transactionId")
+    fun getTransactionFromId(transactionId: Int): Flow<Transaction>
 }

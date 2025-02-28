@@ -19,6 +19,7 @@ class DataStoreManager(val context: Context) {
         val USER_NAME = stringPreferencesKey("USER_NAME")
         val IS_LOGGED_IN = booleanPreferencesKey("IS_LOGGED_IN")
         val APP_THEME_MODE = stringPreferencesKey("APP_THEME_MODE")
+        val BASED_CURRENCY = stringPreferencesKey("BASED_CURRENCY")
     }
 
     suspend fun saveToUserDataStore(userDetails: UserDetails) {
@@ -39,6 +40,10 @@ class DataStoreManager(val context: Context) {
             email = it[EMAIL] ?: "",
             userName = it[USER_NAME] ?: ""
         )
+    }
+
+    fun getBasedCurrency() = context.preferenceDataStore.data.map {
+        it[BASED_CURRENCY] ?: "USD"
     }
 
     fun confirmLoginStatus() = context.preferenceDataStore.data.map {

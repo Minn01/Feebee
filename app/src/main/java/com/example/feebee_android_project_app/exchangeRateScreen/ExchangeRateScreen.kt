@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 /*
@@ -35,10 +36,11 @@ fun ExchangeRateScreen(
     modifier: Modifier
 ) {
     val context = LocalContext.current
-    val exchangeRateViewModel: ExchangeRateViewModel = viewModel()
+    val exchangeRateViewModel: ExchangeRateViewModel = hiltViewModel()
     val conversionRates = exchangeRateViewModel.conversionRates.collectAsState()
-    val updatedTime = rememberSaveable { mutableStateOf("updated: 10/20/2005") }
+    val updatedTime = exchangeRateViewModel.timeOfLastUpdate.collectAsState()
     val countryCodes = exchangeRateViewModel.countryCodes.collectAsState()
+    val nextUpdateTime = exchangeRateViewModel.timeOfNextUpdate.collectAsState()
 
     val primarySelectedOption = rememberSaveable { mutableStateOf("USD") }
     val secondarySelectedOption = rememberSaveable { mutableStateOf("USD") }
@@ -82,7 +84,7 @@ fun ExchangeRateScreen(
                 modifier = Modifier.padding(bottom = 20.dp)
             ) {
                 Text(
-                    text = updatedTime.value,
+                    text = "updated: ${if (updatedTime.value.length > 15) updatedTime.value.slice(4..15) else updatedTime.value}",
                     fontSize = 20.sp,
                     modifier = Modifier
                 )
@@ -93,7 +95,7 @@ fun ExchangeRateScreen(
                     modifier = Modifier
                 ) {
                     Text(
-                        "Based: ${exchangeRateViewModel.basedCountryCode}",
+                        "Based: ${exchangeRateViewModel.basedCountryCode.collectAsState().value}",
                         modifier = Modifier.padding(12.dp)
                     )
                 }
@@ -113,7 +115,7 @@ fun ExchangeRateScreen(
 
         item {
             Box(modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally)) {
-                Text("time of next update: ${exchangeRateViewModel.timeOfNextUpdate.collectAsState().value}")
+                Text("time of next update: ${if (nextUpdateTime.value.length > 15) nextUpdateTime.value.slice(0..15) else nextUpdateTime.value}")
             }
         }
     }

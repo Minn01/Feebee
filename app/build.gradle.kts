@@ -52,6 +52,8 @@ android {
     }
 }
 
+val vicoVersion = "2.0.2"
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -66,6 +68,7 @@ dependencies {
     // Dagger Hilt Dependency
     implementation(libs.hilt.android.v2511)
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.storage)
     kapt(libs.hilt.android.compiler)
 
     // Firebase Authentication Dependency
@@ -122,6 +125,9 @@ dependencies {
 
     // Local date work around
     coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+    // MPAndroidChart
+    implementation(libs.mpandroidchart)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

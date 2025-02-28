@@ -12,8 +12,8 @@ interface AccountDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAccount(account: Account)
 
-    @Query("SELECT accountBalance FROM ACCOUNT WHERE accountId = :accountId")
-    fun getAccountBalanceFromAccount(accountId: Int): Double?
+    @Query("SELECT accountBalance FROM ACCOUNT WHERE accountId = :accountId LIMIT 1")
+    fun getAccountBalanceFromAccount(accountId: Int): Flow<Double>
 
     @Query("DELETE FROM ACCOUNT WHERE accountId = :accountId")
     fun deleteAccount(accountId: Int)
@@ -29,4 +29,14 @@ interface AccountDAO {
 
     @Query("SELECT accountName FROM ACCOUNT")
     fun getAccountNames(): Flow<List<String>>
+
+    @Query("SELECT accountId FROM ACCOUNT WHERE accountName = :accountName")
+    fun getAccountIdFromName(accountName: String): Flow<Int>
+
+    @Query("""
+        UPDATE ACCOUNT 
+        SET accountBalance = :amount 
+        WHERE accountId = :accountId
+    """)
+    suspend fun updateAccountBalance(accountId: Int, amount: Double)
 }

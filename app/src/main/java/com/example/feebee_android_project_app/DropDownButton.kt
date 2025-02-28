@@ -23,6 +23,7 @@ fun DropDownButton(
     readOnly: Boolean = true,
     onValueChange: (String) -> Unit = {},
     onDropDownButtonClicked: (() -> Unit)? = null,
+    onOptionsSelected: (String) -> Unit = {},
     dropDownLabel: @Composable () -> Unit = {},
     width: Dp,
     height: Dp,
@@ -63,6 +64,7 @@ fun DropDownButton(
                         if (onDropDownButtonClicked != null) {
                             onDropDownButtonClicked()
                         }
+                        onOptionsSelected(selectedOption.value)
                     }
                 )
             }

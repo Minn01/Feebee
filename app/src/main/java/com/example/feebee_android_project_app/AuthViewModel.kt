@@ -55,7 +55,8 @@ class AuthViewModel @Inject constructor(
                 if (task.isSuccessful) {
                     _authState.value = AuthState.Authenticated
                 } else {
-                    _authState.value = AuthState.Error(task.exception?.message?:"Something went wrong")
+                    _authState.value =
+                        AuthState.Error(task.exception?.message ?: "Something went wrong")
                 }
             }
 
@@ -76,7 +77,8 @@ class AuthViewModel @Inject constructor(
                 if (task.isSuccessful) {
                     _authState.value = AuthState.Authenticated
                 } else {
-                    _authState.value = AuthState.Error(task.exception?.message?:"Something went wrong")
+                    _authState.value =
+                        AuthState.Error(task.exception?.message ?: "Something went wrong")
                 }
             }
 
@@ -124,6 +126,12 @@ class AuthViewModel @Inject constructor(
     fun setAppTheme(theme: String) {
         viewModelScope.launch {
             dataStoreManager.setAppTheme(theme)
+        }
+    }
+
+    fun clearDataStore() {
+        viewModelScope.launch {
+            dataStoreManager.clearDataFromDataStore()
         }
     }
 }

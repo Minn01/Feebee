@@ -24,6 +24,7 @@ import com.example.feebee_android_project_app.initialSetUpScreens.SignupScreen
 import com.example.feebee_android_project_app.data.AppScreens
 import com.example.feebee_android_project_app.data.AuthState
 import com.example.feebee_android_project_app.exchangeRateScreen.ExchangeRateScreen
+import com.example.feebee_android_project_app.homeScreens.HomeScreen
 
 /*
     TODO: Add the screens here for the navigation
@@ -55,7 +56,10 @@ fun NavigationGraph(
             enterTransition = { slideInHorizontally(initialOffsetX = { -1000 }) + fadeIn() },
             exitTransition = { slideOutHorizontally(targetOffsetX = { 1000 }) + fadeOut() }
         ) {
-            HomeScreen(Modifier.padding(contentPadding))
+            HomeScreen(
+                navController = navController,
+                Modifier.padding(contentPadding)
+            )
         }
 
         composable(
@@ -71,12 +75,31 @@ fun NavigationGraph(
 
         composable(
             route = "account/{accountId}",
-            arguments = listOf(navArgument("accountId") { NavType.IntType })
+            arguments = listOf(navArgument("accountId") {
+                type = NavType.IntType
+                defaultValue = -1
+            })
         ) { backStackEntry ->
             val accountId = backStackEntry.arguments?.getInt("accountId") ?: -1
             SingleAccountScreen(
+                navController = navController,
                 accountId = accountId,
                 Modifier.padding(contentPadding)
+            )
+        }
+
+        composable(
+            route = "transaction/{transactionId}",
+            arguments = listOf(navArgument("transactionId") {
+                type = NavType.IntType
+                defaultValue = -1
+            })
+        ) { backStackEntry ->
+            val transactionId = backStackEntry.arguments?.getInt("transactionId") ?: -1
+            TransactionDetailScreen(
+                navController = navController,
+                transactionId = transactionId,
+                modifier = Modifier.padding(contentPadding)
             )
         }
 

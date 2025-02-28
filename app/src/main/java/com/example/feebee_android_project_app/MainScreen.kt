@@ -1,6 +1,7 @@
 package com.example.feebee_android_project_app
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -19,10 +20,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.feebee_android_project_app.accountScreens.AccountBarTop
+import com.example.feebee_android_project_app.accountScreens.addTransaction
+import com.example.feebee_android_project_app.accountScreens.removeDateState
 import com.example.feebee_android_project_app.appBars.AppBarBottom
 import com.example.feebee_android_project_app.appBars.AppBarTop
 import com.example.feebee_android_project_app.data.AppScreens
@@ -40,7 +44,6 @@ fun MainScreen (
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
     val navController = rememberNavController()
-    val pagerState = rememberPagerState(pageCount = { 4 })
     val appTheme = authViewModel.themeState.collectAsState()
     authViewModel.getAppTheme()
     val selectedTab = rememberSaveable { mutableIntStateOf(0) }
@@ -49,6 +52,10 @@ fun MainScreen (
     val accountsList = roomViewModel.accountList.collectAsState()
     val selectedIndex = rememberSaveable { mutableIntStateOf(0) }
     val accountNameOnTopBar = rememberSaveable { mutableStateOf("") }
+
+    val showBottomSheet = rememberSaveable { mutableStateOf(false) }
+    val accountBalance = roomViewModel.accountBalance.collectAsState()
+    val context = LocalContext.current
 
     // Navigation Drawer for the main menu
     ModalNavigationDrawer(
@@ -90,6 +97,11 @@ fun MainScreen (
 
         Log.d("currentScreen", "currentScreen: $currentScreen")
         // The content of what's being displayed in the screen
+
+        if (accountsList.value.size == 1) {
+            accountNameOnTopBar.value = accountsList.value.first().accountName
+        }
+
        Scaffold (
            topBar =  {
                if (currentScreen == "SINGLE_ACCOUNT") {
@@ -148,6 +160,24 @@ fun MainScreen (
                isLoggedIn = authViewModel.getLoginStatus().collectAsState(initial = false),
                contentPadding = innerPadding
            )
+
+           if (showBottomSheet.value) {
+               TransactionBottomSheet(
+                   onDismiss = { showBottomSheet.value = !showBottomSheet.value },
+                   onSave = { transaction, accountIdToAdd ->
+                       showBottomSheet.value = !showBottomSheet.value
+                       roomViewModel.getAccountBalance(accountIdToAdd)
+                       addTransaction(
+                           roomViewModel,
+                           transaction,
+                           accountIdToAdd,
+                           accountBalance.value
+                       )
+                       Toast.makeText(context, "transaction added", Toast.LENGTH_SHORT).show()
+                       navController.navigate("account/$accountIdToAdd")
+                   }
+               )
+           }
        }
     }
 }
@@ -155,6 +185,10 @@ fun MainScreen (
 fun getScreenTitle(currentRoute: String): String {
     if (currentRoute.startsWith("account/")) {
         return "SINGLE_ACCOUNT"
+    }
+
+    if (currentRoute.startsWith("transaction/")) {
+        return "Transaction"
     }
 
     return when (currentRoute) {

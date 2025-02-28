@@ -3,15 +3,13 @@ package com.example.feebee_android_project_app.data
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -37,6 +35,15 @@ class RoomViewModel @Inject constructor(
 
     private val _transactionList = MutableStateFlow(emptyList<Transaction>())
     val transactionList: StateFlow<List<Transaction>> = _transactionList
+
+    private val _accountBalance = MutableStateFlow(0.0)
+    val accountBalance: StateFlow<Double> = _accountBalance
+
+    private val _selectedAccountId = MutableStateFlow(0)
+    val selectedAccountId: StateFlow<Int> = _selectedAccountId
+
+    private val _currentTransaction = MutableStateFlow(Transaction())
+    val currentTransaction: StateFlow<Transaction> = _currentTransaction
 
     init {
         getAccountScreenData()
@@ -87,8 +94,8 @@ class RoomViewModel @Inject constructor(
 
     fun getNumOfAccounts() {
         viewModelScope.launch {
-            repository.getNumOfAccounts().collect {
-                _numOfAccounts.value = it
+            repository.getNumOfAccounts().collect { count ->
+                _numOfAccounts.update { count }
             }
         }
     }
@@ -123,7 +130,13 @@ class RoomViewModel @Inject constructor(
         }
     }
 
-    fun getAccountBalance(accountId: Int): Double? = repository.getAccountBalanceFromAccount(accountId)
+    fun getAccountBalance(accountId: Int) {
+        viewModelScope.launch {
+            repository.getAccountBalanceFromAccount(accountId).collect {
+                _accountBalance.value = it
+            }
+        }
+    }
 
     fun getAccountNames(): Flow<List<String>> = repository.getAccountNames()
 
@@ -137,18 +150,18 @@ class RoomViewModel @Inject constructor(
         }
     }
 
-    fun getTransactionWithinYear(accountId: Int, transactionType: String, date: LocalDate) {
+    fun getTransactionWithinYear(accountId: Int, transactionType: String, year: String) {
         viewModelScope.launch {
-            repository.getTransactionWithinYear(accountId, transactionType, date).collect {
-                _transactionList.value = it
+            repository.getTransactionWithinYear(accountId, transactionType, year).collect {
+                _transactionList.value = it.toList()
             }
         }
     }
 
-    fun getTransactionWithinMonth(accountId: Int, transactionType: String, date: LocalDate) {
+    fun getTransactionWithinMonth(accountId: Int, transactionType: String, month: String) {
         viewModelScope.launch {
-            repository.getTransactionWithinMonth(accountId, transactionType, date).collect {
-                _transactionList.value = it
+            repository.getTransactionWithinMonth(accountId, transactionType, month).collect {
+                _transactionList.value = it.toList()
             }
         }
     }
@@ -156,7 +169,49 @@ class RoomViewModel @Inject constructor(
     fun getTransactionOfDate(accountId: Int, transactionType: String, date: LocalDate) {
         viewModelScope.launch {
             repository.getTransactionOfDate(accountId, transactionType, date).collect {
-                _transactionList.value = it
+                _transactionList.value = it.toList()
+            }
+        }
+    }
+
+    fun updateAccountBalanceAccount(accountId: Int, amount: Double) {
+        viewModelScope.launch {
+            repository.updateAccountBalanceAccount(accountId = accountId, amount)
+        }
+    }
+
+    fun getAccountIdFromName(accountName: String) {
+        viewModelScope.launch {
+            repository.getAccountIdFromName(accountName).collect {
+                _selectedAccountId.value = it
+            }
+        }
+    }
+
+    fun getTransactionsByYearAndMonth(accountId: Int, transactionType: String, year: String, month: String) {
+        viewModelScope.launch {
+            repository.getTransactionsByYearAndMonth(
+                accountId, transactionType, year, month
+            ).collect {
+                _transactionList.value = it.toList()
+            }
+        }
+    }
+
+    fun getTransactionsFromDateRange(accountId: Int, transactionType: String, startDate: LocalDate, endDate: LocalDate) {
+        viewModelScope.launch {
+            repository.getTransactionsWithinDateRange(
+                accountId, transactionType, startDate, endDate
+            ).collect {
+                _transactionList.value = it.toList()
+            }
+        }
+    }
+
+    fun getTransactionFromId(transactionId: Int) {
+        viewModelScope.launch {
+            repository.getTransactionFromId(transactionId).collect {
+                _currentTransaction.value = it
             }
         }
     }
