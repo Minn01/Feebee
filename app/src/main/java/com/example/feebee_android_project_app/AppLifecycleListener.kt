@@ -8,12 +8,11 @@ class AppLifecycleListener(
 ) : DefaultLifecycleObserver {
 
     override fun onPause(owner: LifecycleOwner) {
-        super.onPause(owner)
         saveData(owner) // Pass the lifecycle owner
     }
 
     override fun onStop(owner: LifecycleOwner) {
-        super.onStop(owner)
         saveData(owner) // Ensure data is saved when app goes to background
     }
 }
+

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "348996070249",
+    "project_id": "feebe-finance-app-project",
+    "storage_bucket": "feebe-finance-app-project.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:348996070249:android:9c57b194d9012b2c2f2bf8",
+        "android_client_info": {
+          "package_name": "com.example.feebee_android_project_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQTEcm72iOjfX3w73REHK-PoqPWunu0fk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

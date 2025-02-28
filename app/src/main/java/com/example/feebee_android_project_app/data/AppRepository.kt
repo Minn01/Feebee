@@ -24,6 +24,7 @@ class AppRepository @Inject constructor(
     fun getTotalAcrossAccounts(): Flow<Double> = accountDAO.getTotalAcrossAccounts()
     fun getAccountIdFromName(accountName: String): Flow<Int> = accountDAO.getAccountIdFromName(accountName)
     suspend fun updateAccountBalanceAccount(accountId: Int, amount: Double) = accountDAO.updateAccountBalance(accountId, amount)
+    suspend fun updateAccount(account: Account) = accountDAO.updateAccount(account)
     fun getTransactionAmountAcrossAccountsOfDate(transactionType: String, createdDate: LocalDate): Flow<Double> {
         return transactionDAO.getTransactionAmountAcrossAccountsOfDate(transactionType, createdDate)
     }
@@ -40,6 +41,7 @@ class AppRepository @Inject constructor(
     fun getTransactionsByYearAndMonth(accountId: Int, transactionType: String, year: String, month: String) = transactionDAO.getTransactionsByYearAndMonth(accountId, transactionType, year, month)
     fun getTransactionsWithinDateRange(accountId: Int, transactionType: String, startDate: LocalDate, endDate: LocalDate) = transactionDAO.getTransactionsWithinDateRange(accountId, transactionType, startDate, endDate)
     fun getAllTransactions(): Flow<List<Transaction>> = transactionDAO.getAllTransactions()
+    suspend fun updateTransaction(transaction: Transaction) = transactionDAO.updateTransaction(transaction)
 
     fun modifyTransaction(
         transactionId: Int,

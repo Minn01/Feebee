@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.hilt.android.v2511)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.storage)
+    implementation(libs.androidx.lifecycle.process)
     kapt(libs.hilt.android.compiler)
 
     // Firebase Authentication Dependency
