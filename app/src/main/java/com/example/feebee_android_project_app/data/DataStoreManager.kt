@@ -63,4 +63,8 @@ class DataStoreManager(val context: Context) {
             storedData[APP_THEME_MODE] = theme
         }
     }
+
+    fun getAllDatastoreData() {
+
+    }
 }

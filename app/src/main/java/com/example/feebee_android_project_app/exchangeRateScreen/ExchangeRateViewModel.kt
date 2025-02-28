@@ -51,6 +51,10 @@ class ExchangeRateViewModel @Inject constructor(
                 _countryCodes.value = _conversionRates.value.keys.toList()
             } catch (e: Exception) {
                 Log.d("API_ERROR", e.message.toString())
+                _conversionRates.value = emptyMap()
+                _timeOfLastUpdate.value = ""
+                _timeOfNextUpdate.value = ""
+                _countryCodes.value = emptyList()
             }
         }
     }

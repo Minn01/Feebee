@@ -106,4 +106,7 @@ interface TransactionDAO {
 
     @Query("SELECT * FROM `TRANSACTION` WHERE transactionId = :transactionId")
     fun getTransactionFromId(transactionId: Int): Flow<Transaction>
+
+    @Query("SELECT * FROM `TRANSACTION`")
+    fun getAllTransactions(): Flow<List<Transaction>>
 }

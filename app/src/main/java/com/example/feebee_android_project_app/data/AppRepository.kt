@@ -39,6 +39,7 @@ class AppRepository @Inject constructor(
     fun getTransactionOfDate(accountId: Int, transactionType: String, date: LocalDate): Flow<List<Transaction>> = transactionDAO.getTransactionOfDate(accountId, transactionType, date)
     fun getTransactionsByYearAndMonth(accountId: Int, transactionType: String, year: String, month: String) = transactionDAO.getTransactionsByYearAndMonth(accountId, transactionType, year, month)
     fun getTransactionsWithinDateRange(accountId: Int, transactionType: String, startDate: LocalDate, endDate: LocalDate) = transactionDAO.getTransactionsWithinDateRange(accountId, transactionType, startDate, endDate)
+    fun getAllTransactions(): Flow<List<Transaction>> = transactionDAO.getAllTransactions()
 
     fun modifyTransaction(
         transactionId: Int,
