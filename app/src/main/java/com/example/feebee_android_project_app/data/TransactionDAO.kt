@@ -40,7 +40,7 @@ interface TransactionDAO {
     """
     SELECT * FROM `TRANSACTION` 
     WHERE accountId = :accountId 
-    AND transactionType = :transactionType 
+    AND transactionType = :transactionType
     AND strftime('%m', createdDate) = :month
     """
     ) fun getTransactionWithinMonth(accountId: Int, transactionType: String, month: String): Flow<List<Transaction>>
@@ -58,7 +58,7 @@ interface TransactionDAO {
         AND createdDate = :transactionDate
         """
     )
-    fun getTransactionAmountAcrossAccountsOfDate(transactionType: String, transactionDate: LocalDate): Flow<Double>
+    fun getTransactionAmountAcrossAccountsOfDate(transactionType: String, transactionDate: String): Flow<Double>
 
     // Modify a transaction
     @Query(
@@ -91,8 +91,8 @@ interface TransactionDAO {
     fun getTransactionsWithinDateRange(
         accountId: Int,
         transactionType: String,
-        startDate: LocalDate,
-        endDate: LocalDate
+        startDate: String,
+        endDate: String
     ): Flow<List<Transaction>>
 
     @Query(
@@ -110,6 +110,24 @@ interface TransactionDAO {
 
     @Query("SELECT * FROM `TRANSACTION`")
     fun getAllTransactions(): Flow<List<Transaction>>
+
+    @Query(
+    """
+    SELECT SUM(transactionAmount)
+    FROM `TRANSACTION`
+    WHERE strftime('%Y-%m', createdDate) = strftime('%Y-%m', 'now')
+    AND transactionType = :transactionType 
+    """
+    ) fun getCurrentMonthTransactions(transactionType: String): Flow<Double>
+
+    @Query(
+    """
+    SELECT SUM(transactionAmount)
+    FROM `TRANSACTION`
+    WHERE strftime('%Y', createdDate) = strftime('%Y', 'now')
+    AND transactionType = :transactionType
+    """
+    ) fun getCurrentYearTransactions(transactionType: String): Flow<Double>
 
     @Update
     suspend fun updateTransaction(transaction: Transaction)

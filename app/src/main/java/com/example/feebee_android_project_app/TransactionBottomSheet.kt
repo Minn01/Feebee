@@ -204,7 +204,7 @@ fun TransactionBottomSheet(
                             value = transactionTitle.value,
                             onValueChange = { transactionTitle.value = it },
                             label = { Text("Transaction Title") },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                             modifier = Modifier.fillMaxWidth()
                         )
 

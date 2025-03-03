@@ -6,6 +6,7 @@ import com.example.feebee_android_project_app.data.AppRepository
 import com.example.feebee_android_project_app.data.DataStoreManager
 import com.example.feebee_android_project_app.data.FirestoreAccount
 import com.example.feebee_android_project_app.data.FirestoreTransaction
+import com.example.feebee_android_project_app.data.NotificationData
 import com.example.feebee_android_project_app.data.Transaction
 import com.example.feebee_android_project_app.data.UserDetails
 import com.google.android.gms.tasks.Task
@@ -16,6 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -30,7 +32,7 @@ class FirestoreRepository @Inject constructor(
     fun fetchAllDataFromFireStore(userEmail: String, onComplete: () -> Unit) {
         val userDocRef = firestoreDb.collection("users").document(userEmail)
 
-        // 🔥 Step 1: Fetch User Preferences
+        // 🔥 Step 1: Fetch User Preferences & Additional Data
         userDocRef.get().addOnSuccessListener { document ->
             document?.let {
                 val userPrefs = document.data ?: return@let
@@ -44,6 +46,23 @@ class FirestoreRepository @Inject constructor(
                     dataStoreManager.saveBasedCurrency(userPrefs["baseCurrency"] as? String ?: "")
                     dataStoreManager.saveAppTheme(userPrefs["appThemeMode"] as? String ?: "")
                     dataStoreManager.setLoginStatus(userPrefs["isLoggedIn"] as? Boolean ?: false)
+
+                    // New fields
+                    dataStoreManager.saveBudgetAmount(userPrefs["budgetAmount"] as? Double ?: 0.0)
+                    dataStoreManager.saveBudgetCycle(userPrefs["budgetCycle"] as? String ?: "")
+                    dataStoreManager.saveBudgetThreshold(userPrefs["budgetThreshold"] as? Double ?: 0.0)
+                    // Retrieve the notifications JSON string from Firestore
+                    val notificationJson = userPrefs["notifications"] as? String ?: "[]"
+
+                    // Deserialize JSON into List<NotificationData>
+                    val notificationList: List<NotificationData> = try {
+                        Json.decodeFromString(notificationJson)
+                    } catch (e: Exception) {
+                        emptyList()
+                    }
+
+                    // Save the properly formatted notification list
+                    dataStoreManager.saveNotificationList(notificationList)
                 }
             }
         }.addOnFailureListener { exception ->

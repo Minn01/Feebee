@@ -18,6 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.feebee_android_project_app.accountScreens.AccountMainScreen
 import com.example.feebee_android_project_app.accountScreens.SingleAccountScreen
+import com.example.feebee_android_project_app.budgetScreens.BudgetControlScreen
 import com.example.feebee_android_project_app.initialSetUpScreens.LoadingScreen
 import com.example.feebee_android_project_app.initialSetUpScreens.LoginScreen
 import com.example.feebee_android_project_app.initialSetUpScreens.SignupScreen

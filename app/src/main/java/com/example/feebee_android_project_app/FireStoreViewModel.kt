@@ -31,7 +31,16 @@ class FireStoreViewModel @Inject constructor(
             val userDetails = dataStoreManager.getUserDataFromDataStore().first()
             val currency = dataStoreManager.getBasedCurrency().first()
             val themeMode = dataStoreManager.getAppThemeFromDataStore().first()
+            val appLanguage = dataStoreManager.getAppLanguage().first()
             val isLoggedIn = dataStoreManager.confirmLoginStatus().first()
+
+            // 🔹 Retrieve budget details
+            val budgetAmount = dataStoreManager.getBudgetAmount().first()
+            val budgetCycle = dataStoreManager.getBudgetCycle().first()
+            val budgetThreshold = dataStoreManager.getBudgetThreshold().first() // Assuming you added this method
+
+            // 🔹 Retrieve notifications
+            val notificationList = dataStoreManager.getNotificationList().first() // Assuming you added this method
 
             // Store user preferences
             val userPrefs = mapOf(
@@ -39,7 +48,18 @@ class FireStoreViewModel @Inject constructor(
                 "userName" to userDetails.userName,
                 "baseCurrency" to currency,
                 "appThemeMode" to themeMode,
-                "isLoggedIn" to isLoggedIn
+                "appLanguage" to appLanguage,
+                "isLoggedIn" to isLoggedIn,
+                "budgetAmount" to budgetAmount,
+                "budgetCycle" to budgetCycle,
+                "budgetThreshold" to budgetThreshold,
+                "notifications" to notificationList.map {
+                    mapOf(
+                        "title" to it.title,
+                        "message" to it.message,
+                        "timestamp" to it.timestamp
+                    )
+                }
             )
 
             firestoreDb.collection("users").document(userEmail).set(userPrefs)
@@ -54,6 +74,7 @@ class FireStoreViewModel @Inject constructor(
                     accountId = account.accountId,
                     accountName = account.accountName,
                     accountBalance = account.accountBalance,
+                    basedCurrency = account.basedCurrency,
                     createdDate = account.createdDate.toString()
                 )
 
@@ -68,9 +89,11 @@ class FireStoreViewModel @Inject constructor(
             transactions.forEach { transaction ->
                 val firestoreTransaction = FirestoreTransaction(
                     transactionId = transaction.transactionId,
+                    transactionType = transaction.transactionType,
                     accountId = transaction.accountId,
                     amount = transaction.transactionAmount,
                     details = transaction.transactionDetails,
+                    transactionImage = transaction.transactionImageUri,
                     createdDate = transaction.createdDate.toString()
                 )
 

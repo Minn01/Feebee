@@ -25,7 +25,7 @@ class AppRepository @Inject constructor(
     fun getAccountIdFromName(accountName: String): Flow<Int> = accountDAO.getAccountIdFromName(accountName)
     suspend fun updateAccountBalanceAccount(accountId: Int, amount: Double) = accountDAO.updateAccountBalance(accountId, amount)
     suspend fun updateAccount(account: Account) = accountDAO.updateAccount(account)
-    fun getTransactionAmountAcrossAccountsOfDate(transactionType: String, createdDate: LocalDate): Flow<Double> {
+    fun getTransactionAmountAcrossAccountsOfDate(transactionType: String, createdDate: String): Flow<Double> {
         return transactionDAO.getTransactionAmountAcrossAccountsOfDate(transactionType, createdDate)
     }
 
@@ -39,8 +39,10 @@ class AppRepository @Inject constructor(
     fun getTransactionWithinMonth(accountId: Int, transactionType: String, month: String): Flow<List<Transaction>> = transactionDAO.getTransactionWithinMonth(accountId, transactionType, month)
     fun getTransactionOfDate(accountId: Int, transactionType: String, date: LocalDate): Flow<List<Transaction>> = transactionDAO.getTransactionOfDate(accountId, transactionType, date)
     fun getTransactionsByYearAndMonth(accountId: Int, transactionType: String, year: String, month: String) = transactionDAO.getTransactionsByYearAndMonth(accountId, transactionType, year, month)
-    fun getTransactionsWithinDateRange(accountId: Int, transactionType: String, startDate: LocalDate, endDate: LocalDate) = transactionDAO.getTransactionsWithinDateRange(accountId, transactionType, startDate, endDate)
+    fun getTransactionsWithinDateRange(accountId: Int, transactionType: String, startDate: String, endDate: String) = transactionDAO.getTransactionsWithinDateRange(accountId, transactionType, startDate, endDate)
     fun getAllTransactions(): Flow<List<Transaction>> = transactionDAO.getAllTransactions()
+    fun getCurrentMonthTransactions(transactionType: String): Flow<Double> = transactionDAO.getCurrentMonthTransactions(transactionType = transactionType)
+    fun getCurrentYearTransactions(transactionType: String): Flow<Double> = transactionDAO.getCurrentYearTransactions(transactionType)
     suspend fun updateTransaction(transaction: Transaction) = transactionDAO.updateTransaction(transaction)
 
     fun modifyTransaction(

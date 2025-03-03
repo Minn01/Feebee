@@ -7,7 +7,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,12 +25,14 @@ import com.example.feebee_android_project_app.data.lightModeColors
 
 @Composable
 fun AppBarBottom(
+    showBottomSheet: MutableState<Boolean>,
     appTheme: State<String>,
     selectedItem: MutableIntState,
     selectedTab: MutableIntState,
     navController: NavController,
     modifier: Modifier
 ) {
+    val openSheet = rememberSaveable { mutableStateOf(false) }
     BottomAppBar(
         actions = {
             Row(
@@ -47,6 +52,7 @@ fun AppBarBottom(
                         QuickActionButton(
                             iconLabel = itemPair.second,
                             onButtonClicked = {
+                                showBottomSheet.value = !showBottomSheet.value
                             },
                             modifier = Modifier
                         )

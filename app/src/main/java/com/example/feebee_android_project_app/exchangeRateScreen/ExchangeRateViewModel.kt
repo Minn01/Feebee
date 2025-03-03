@@ -32,7 +32,7 @@ class ExchangeRateViewModel @Inject constructor(
     val basedCountryCode: StateFlow<String> = _basedCountryCode
 
     init {
-        getBasedCurrency()
+        getBasedCountryCode()
         viewModelScope.launch {
             fetchExchangeRates(basedCountryCode.value)
         }
@@ -59,11 +59,17 @@ class ExchangeRateViewModel @Inject constructor(
         }
     }
 
-    private fun getBasedCurrency() {
+    fun getBasedCountryCode() {
         viewModelScope.launch {
             dataStoreManager.getBasedCurrency().collect {
                 _basedCountryCode.value = it
             }
+        }
+    }
+
+    fun setBasedCountryCode(countryCode: String) {
+        viewModelScope.launch {
+            dataStoreManager.saveBasedCurrency(countryCode)
         }
     }
 }

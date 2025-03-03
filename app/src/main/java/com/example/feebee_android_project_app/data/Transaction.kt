@@ -16,8 +16,7 @@ import java.time.LocalDate
             onDelete = ForeignKey.CASCADE
         )
     ]
-)
-data class Transaction(
+) data class Transaction(
     @PrimaryKey(autoGenerate = true) val transactionId: Int = 0,
     val accountId: Int = 0,
     val transactionTitle: String = "",

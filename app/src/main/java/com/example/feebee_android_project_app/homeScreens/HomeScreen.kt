@@ -1,10 +1,13 @@
 package com.example.feebee_android_project_app.homeScreens
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -41,6 +44,8 @@ fun HomeScreen(
     val pickedState = checkPickedState(yearSelected.value, monthSelected.value, "")
     val context = LocalContext.current
 
+    val groupBy = rememberSaveable { mutableStateOf(GroupBy.MONTH) }
+
     LaunchedEffect(selectedAccount, yearSelected.value, monthSelected.value, transactionType) {
         selectedAccount?.let {
             getTransactions(
@@ -56,6 +61,7 @@ fun HomeScreen(
     }
 
     val transactionList = roomViewModel.transactionList.collectAsState()
+    // Convert transactions into data points for the chart using `createdDate`
 
     LazyColumn(
         modifier = modifier
@@ -63,13 +69,9 @@ fun HomeScreen(
             .padding(start = 16.dp, end = 16.dp)
     ) {
         item {
-            AccountSelector(accountLists, selectedIndex) {
+            AccountSelector(accountLists, selectedIndex) {}
 
-            }
-
-            DateFilter(yearSelected, monthSelected, modifier = Modifier) {
-
-            }
+            DateFilter(yearSelected, monthSelected, modifier = Modifier) {}
 
 
             CustomToggleButton(
@@ -84,7 +86,9 @@ fun HomeScreen(
                 iconEnabled = false,
                 toggleButtonClicked = {
                     isChecked.value = !isChecked.value
-//                        getTransactions(accountId, transactionType, roomViewModel, pickedState, yearSelected.value, monthSelected.value, dateRangeSelected.value, context)
+                    if (selectedAccount != null) {
+                        roomViewModel.getAllTransactionsFromAccount(selectedAccount.accountId, transactionType)
+                    }
                 },
                 backgroundColor = Color(0xFF999999),
                 buttonShadeColor = Color(0xFF000000).copy(alpha = 0.7f),
@@ -94,6 +98,22 @@ fun HomeScreen(
                 innerBoxHeight = 30.dp,
                 shape = RoundedCornerShape(8.dp)
             )
+
+            Column {
+                Button(onClick = {
+                    groupBy.value = if (groupBy.value == GroupBy.MONTH) GroupBy.YEAR else GroupBy.MONTH
+                }, modifier = Modifier.padding(top = 16.dp)) {
+                    Text(if (groupBy.value == GroupBy.MONTH) "Switch to Year" else "Switch to Month")
+                }
+
+                // Add the BarChart before listing the transactions
+                if (transactionList.value.isNotEmpty()) {
+                    TransactionBarChart(
+                        transactionList.value, modifier = Modifier.padding(top = 16.dp),
+                        groupBy = groupBy.value,
+                    )
+                }
+            }
         }
 
         items(transactionList.value) { item ->

@@ -66,11 +66,13 @@ class AuthViewModel @Inject constructor(
                     _authState.value =
                         AuthState.Error(task.exception?.message ?: "Something went wrong")
                 }
+            }.addOnFailureListener { task ->
+                Log.d("loginFailed", task.message.toString())
             }
     }
 
     fun signup(userName: String, email: String, password: String) {
-        if (email.isEmpty() || password.isEmpty()) {
+        if (email.isEmpty() || password.isEmpty() || userName.isEmpty()) {
             _authState.value = AuthState.Error("Email or Password cannot be empty!")
         }
 
@@ -88,6 +90,8 @@ class AuthViewModel @Inject constructor(
                     _authState.value =
                         AuthState.Error(task.exception?.message ?: "Something went wrong")
                 }
+            }.addOnFailureListener { task ->
+                Log.d("signupFailed", task.message.toString())
             }
     }
 

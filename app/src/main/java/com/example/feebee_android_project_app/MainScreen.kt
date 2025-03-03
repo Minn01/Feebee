@@ -141,6 +141,7 @@ fun MainScreen (
            bottomBar = {
                if (currentScreen != "SETUP") {
                    AppBarBottom(
+                       showBottomSheet = showBottomSheet,
                        appTheme = appTheme,
                        selectedItem = selectedItem,
                        selectedTab = selectedTab,

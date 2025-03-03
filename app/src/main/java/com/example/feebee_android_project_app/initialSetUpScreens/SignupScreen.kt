@@ -5,8 +5,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -17,6 +21,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -31,6 +37,7 @@ fun SignupScreen(
     val email = rememberSaveable { mutableStateOf("") }
     val password = rememberSaveable { mutableStateOf("") }
     val userName = rememberSaveable { mutableStateOf("") }
+    val showPassword = rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -74,7 +81,16 @@ fun SignupScreen(
             label = { Text("Password") },
             onValueChange = {
                 password.value = it
-            }
+            },
+            trailingIcon = {
+                IconButton(onClick = { showPassword.value = !showPassword.value }) {
+                    Icon(
+                        imageVector = Icons.Default.Lock,
+                        contentDescription = if (showPassword.value) "Hide password" else "Show password"
+                    )
+                }
+            },
+            visualTransformation = if (showPassword.value) VisualTransformation.None else PasswordVisualTransformation()
         )
 
         Spacer(Modifier.height(16.dp))

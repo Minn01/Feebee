@@ -70,6 +70,8 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.storage)
     implementation(libs.androidx.lifecycle.process)
+    implementation(libs.firebase.messaging)
+    implementation(libs.core.ktx)
     kapt(libs.hilt.android.compiler)
 
     // Firebase Authentication Dependency
@@ -129,6 +131,11 @@ dependencies {
 
     // MPAndroidChart
     implementation(libs.mpandroidchart)
+//    implementation(libs.ui)
+//    implementation(libs.androidx.foundation)
+
+    // Kotlin Coroutines Test Dependency
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

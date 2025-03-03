@@ -35,6 +35,7 @@ import com.example.feebee_android_project_app.data.RoomViewModel
 import com.example.feebee_android_project_app.data.Transaction
 import com.example.feebee_android_project_app.sideNavigationDrawer.CustomToggleButton
 import java.time.LocalDate
+import java.time.Month
 import java.time.format.DateTimeFormatter
 
 enum class PickedState {
@@ -244,7 +245,6 @@ fun checkPickedState(
     // TODO: Maybe needs fixing
     if (dateRangeSelected.isNotEmpty()) {
         if (dateRangeSelected.length > 10) {
-            Log.d("dbgcon", dateRangeSelected)
             return PickedState.DATE_RANGE
         }
         return PickedState.DATE
@@ -315,8 +315,8 @@ fun getTransactions(
     when (pickedState) {
         PickedState.DATE_RANGE -> {
             val twoDates = dateRangeSelected.split("-").map { it.trim() }
-            val startDate = getDate(context, twoDates.first())
-            val endDate = getDate(context, twoDates.last())
+            val startDate = getDate(context, twoDates.first()).toString()
+            val endDate = getDate(context, twoDates.last()).toString()
             roomViewModel.getTransactionsFromDateRange(accountId, transactionType, startDate, endDate)
         }
         PickedState.DATE -> {
@@ -325,12 +325,12 @@ fun getTransactions(
         }
         PickedState.YEAR_MONTH -> {
             // Format month as a two-digit string (e.g., "01" for January)
-            val formattedMonth = monthSelected.padStart(2, '0')
+            val formattedMonth =  Month.valueOf(monthSelected.uppercase()).value.toString().padStart(2, '0')
             roomViewModel.getTransactionsByYearAndMonth(accountId, transactionType, yearSelected, formattedMonth)
         }
         PickedState.MONTH -> {
             // Format month as a two-digit string
-            val formattedMonth = monthSelected.padStart(2, '0')
+            val formattedMonth = Month.valueOf(monthSelected.uppercase()).value.toString().padStart(2, '0')
             // You need to modify your DAO to handle just month, or use the current year
             roomViewModel.getTransactionWithinMonth(accountId, transactionType, formattedMonth)
         }

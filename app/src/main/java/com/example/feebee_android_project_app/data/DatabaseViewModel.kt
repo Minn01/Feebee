@@ -1,5 +1,6 @@
 package com.example.feebee_android_project_app.data
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -44,6 +45,9 @@ class RoomViewModel @Inject constructor(
 
     private val _currentTransaction = MutableStateFlow(Transaction())
     val currentTransaction: StateFlow<Transaction> = _currentTransaction
+
+    private val _spentAmount = MutableStateFlow(0.0)
+    val spentAmount: StateFlow<Double> = _spentAmount
 
     init {
         getAccountScreenData()
@@ -121,8 +125,8 @@ class RoomViewModel @Inject constructor(
 
         viewModelScope.launch {
             combine(
-                repository.getTransactionAmountAcrossAccountsOfDate("income", currentDate),
-                repository.getTransactionAmountAcrossAccountsOfDate("expense", currentDate)
+                repository.getTransactionAmountAcrossAccountsOfDate("income", currentDate.toString()),
+                repository.getTransactionAmountAcrossAccountsOfDate("expense", currentDate.toString())
             ) { income, expense ->
                 _incomeAcrossAccountsToday.value = income
                 _expenseAcrossAccountsToday.value = expense
@@ -198,7 +202,7 @@ class RoomViewModel @Inject constructor(
         }
     }
 
-    fun getTransactionsFromDateRange(accountId: Int, transactionType: String, startDate: LocalDate, endDate: LocalDate) {
+    fun getTransactionsFromDateRange(accountId: Int, transactionType: String, startDate: String, endDate: String) {
         viewModelScope.launch {
             repository.getTransactionsWithinDateRange(
                 accountId, transactionType, startDate, endDate

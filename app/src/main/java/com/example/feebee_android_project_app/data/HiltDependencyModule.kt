@@ -1,5 +1,6 @@
 package com.example.feebee_android_project_app.data
 
+import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.google.firebase.auth.FirebaseAuth
@@ -58,5 +59,11 @@ object AppModule {
     @Provides
     fun provideTransactionDAO(database: AppDatabase): TransactionDAO {
         return database.transactionDAO()
+    }
+
+    @Provides
+    @Singleton
+    fun provideContext(application: Application): Context {
+        return application.applicationContext
     }
 }
