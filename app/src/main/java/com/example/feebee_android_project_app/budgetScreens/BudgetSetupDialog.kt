@@ -14,12 +14,17 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.feebee_android_project_app.AuthViewModel
+import com.example.feebee_android_project_app.data.darkModeColors
+import com.example.feebee_android_project_app.data.lightModeColors
 
 @Composable
 fun BudgetSetupDialog(
@@ -30,6 +35,10 @@ fun BudgetSetupDialog(
     val selectedPeriod = rememberSaveable  { mutableStateOf("Monthly") }
 
     val budgetPeriods = listOf("monthly", "yearly")
+
+    val authViewModel: AuthViewModel = hiltViewModel()
+    authViewModel.getAppTheme()
+    val appTheme = authViewModel.themeState.collectAsState()
 
     AlertDialog(
         onDismissRequest = { onDismiss() },
@@ -67,6 +76,7 @@ fun BudgetSetupDialog(
         },
         confirmButton = {
             Button(
+                colors = if (appTheme.value == "light") lightModeColors.customButtonColors else darkModeColors.customButtonColors,
                 onClick = {
                     val budget = budgetAmount.value.toDoubleOrNull() ?: 0.0
                     if (budget > 0) {
@@ -79,7 +89,9 @@ fun BudgetSetupDialog(
             }
         },
         dismissButton = {
-            Button(onClick = { onDismiss() }) {
+            Button(onClick = { onDismiss() },
+                colors = if (appTheme.value == "light") lightModeColors.customButtonColors else darkModeColors.customButtonColors,
+            ) {
                 Text("Cancel")
             }
         }

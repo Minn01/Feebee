@@ -75,16 +75,25 @@ fun NavigationGraph(
         }
 
         composable(
-            route = "account/{accountId}",
-            arguments = listOf(navArgument("accountId") {
+            route = "account/{accountId}/{accountName}",
+            arguments = listOf(
+                navArgument("accountId") {
                 type = NavType.IntType
                 defaultValue = -1
-            })
+                },
+                navArgument("accountName") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                }
+            )
         ) { backStackEntry ->
             val accountId = backStackEntry.arguments?.getInt("accountId") ?: -1
+            val accountName = backStackEntry.arguments?.getString("accountName") ?: ""
+
             SingleAccountScreen(
                 navController = navController,
                 accountId = accountId,
+                accountName = accountName,
                 Modifier.padding(contentPadding)
             )
         }

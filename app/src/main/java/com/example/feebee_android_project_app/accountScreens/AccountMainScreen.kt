@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -23,8 +24,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.feebee_android_project_app.AuthViewModel
 import com.example.feebee_android_project_app.data.Account
 import com.example.feebee_android_project_app.data.RoomViewModel
+import com.example.feebee_android_project_app.data.darkModeColors
+import com.example.feebee_android_project_app.data.lightModeColors
 
 @Composable
 fun AccountMainScreen(
@@ -38,6 +42,9 @@ fun AccountMainScreen(
     val incomeAcrossAccountsToday = roomViewModel.incomeAcrossAccountsToday.collectAsState()
     val expenseAcrossAccountsToday = roomViewModel.expenseAcrossAccountsToday.collectAsState()
     var showDialog by rememberSaveable { mutableStateOf(false) }
+    val authViewModel: AuthViewModel = hiltViewModel()
+    authViewModel.getAppTheme()
+    val appTheme = authViewModel.themeState.collectAsState()
 
     LazyColumn(
         modifier = modifier
@@ -54,8 +61,10 @@ fun AccountMainScreen(
             )
 
             Button(
+                colors = if (appTheme.value == "light") lightModeColors.customButtonColors else darkModeColors.customButtonColors,
                 onClick = { showDialog = true },
                 modifier = Modifier.padding(top = 16.dp, bottom = 20.dp)
+
             ) {
                 Box(
                     modifier = Modifier
@@ -70,7 +79,7 @@ fun AccountMainScreen(
         items(accountList.value) { account ->
             AccountCard(
                 account = account,
-                onAccountClicked = { navController.navigate("account/${account.accountId}") },
+                onAccountClicked = { navController.navigate("account/${account.accountId}/${account.accountName}") },
                 modifier = Modifier // Explicitly label the modifier for clarity.
             )
         }

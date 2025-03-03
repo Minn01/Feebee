@@ -20,9 +20,6 @@ class SettingViewModel @Inject constructor (
     private val _appLanguage = MutableStateFlow("")
     val appLanguage: StateFlow<String> = _appLanguage
 
-    private val _basedCountryCode = MutableStateFlow("")
-    val basedCountryCode: StateFlow<String> = _basedCountryCode
-
     init {
         getAppLanguage()
     }
@@ -37,16 +34,22 @@ class SettingViewModel @Inject constructor (
 
     fun setAppLanguage(context: Context, language: String) {
         viewModelScope.launch {
-            val job = launch {
                 dataStoreManager.setAppLanguage(language)
-            }
-
-            job.invokeOnCompletion {
-                val languageString = languageStringMap[language] ?: "my"
-                setAppLocale(context, languageString)
-            }
         }
     }
+
+//    fun setAppLanguage(context: Context, language: String) {
+//        viewModelScope.launch {
+//            val job = launch {
+//                dataStoreManager.setAppLanguage(language)
+//            }
+//
+//            job.invokeOnCompletion {
+//                val languageString = languageStringMap[language] ?: "my"
+//                setAppLocale(context, languageString)
+//            }
+//        }
+//    }
 
 
     fun setAppLocale(context: Context, language: String) {

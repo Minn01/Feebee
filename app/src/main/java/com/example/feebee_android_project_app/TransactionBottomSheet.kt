@@ -42,6 +42,8 @@ import com.example.feebee_android_project_app.data.Account
 import com.example.feebee_android_project_app.data.DateData
 import com.example.feebee_android_project_app.data.RoomViewModel
 import com.example.feebee_android_project_app.data.Transaction
+import com.example.feebee_android_project_app.data.darkModeColors
+import com.example.feebee_android_project_app.data.lightModeColors
 import okhttp3.internal.wait
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -51,9 +53,11 @@ import kotlin.coroutines.coroutineContext
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionBottomSheet(
+    accountName: String,
     onDismiss: () -> Unit,
     onSave: (Transaction, Int) -> Unit
 ) {
+    val currentDate = LocalDate.now()
     val roomViewModel: RoomViewModel = hiltViewModel()
     val context = LocalContext.current
 
@@ -61,7 +65,7 @@ fun TransactionBottomSheet(
     val typeSelected = rememberSaveable { mutableStateOf("") }
     val transactionTypeOptions = listOf("income", "expense")
 
-    val accountSelected = rememberSaveable { mutableStateOf("") }
+    val accountSelected = rememberSaveable { mutableStateOf(accountName) }
     val accountDDExpanded = rememberSaveable { mutableStateOf(false) }
 
     roomViewModel.getAllAccounts()
@@ -70,9 +74,9 @@ fun TransactionBottomSheet(
     val yearDDExpanded = rememberSaveable { mutableStateOf(false) }
     val monthDDExpanded = rememberSaveable { mutableStateOf(false) }
     val dayDDExpanded = rememberSaveable { mutableStateOf(false) }
-    val selectedYear = rememberSaveable { mutableStateOf("") }
-    val selectedMonth = rememberSaveable { mutableStateOf("") }
-    val selectedDay = rememberSaveable { mutableStateOf("") }
+    val selectedYear = rememberSaveable { mutableStateOf(currentDate.year.toString()) }
+    val selectedMonth = rememberSaveable { mutableStateOf(currentDate.month.toString().padStart(2, '0')) }
+    val selectedDay = rememberSaveable { mutableStateOf(currentDate.dayOfMonth.toString().padStart(2, '0')) }
 
     val transactionTitle = rememberSaveable { mutableStateOf("") }
     val transactionAmount = rememberSaveable { mutableStateOf("") }
@@ -81,6 +85,10 @@ fun TransactionBottomSheet(
     val createdDate = rememberSaveable { mutableStateOf(LocalDate.now()) }
 
     val selectAccountId = roomViewModel.selectedAccountId.collectAsState()
+
+    val authViewModel: AuthViewModel = hiltViewModel()
+    authViewModel.getAppTheme()
+    val appTheme = authViewModel.themeState.collectAsState()
 
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
@@ -99,6 +107,8 @@ fun TransactionBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
+        contentColor = if (appTheme.value == "light") lightModeColors.contentColor else darkModeColors.contentColor,
+        containerColor = if (appTheme.value == "light") lightModeColors.backgroundColor else darkModeColors.backgroundColor,
         content = {
             Column {
                 LazyColumn(
@@ -182,7 +192,7 @@ fun TransactionBottomSheet(
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Text(
-                            "Select a date",
+                            "Select transaction type",
                             fontSize = 20.sp,
                             modifier = Modifier.padding(bottom = 5.dp)
                         )
@@ -258,6 +268,7 @@ fun TransactionBottomSheet(
                 }
 
                 Button(
+                    colors = if (appTheme.value == "light") lightModeColors.customButtonColors else darkModeColors.customButtonColors,
                     // TODO: date fix
                     onClick = {
                         if (selectedYear.value.isNotEmpty() &&

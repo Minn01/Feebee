@@ -4,6 +4,7 @@ import java.time.LocalDate
 
 data class FirestoreTransaction(
     val transactionId: Int = 0,  // ✅ Keep as Int
+    val transactionTitle: String = "",
     val transactionType: String = "",
     val accountId: Int = 0,      // ✅ Keep as Int
     val amount: Double = 0.0,
@@ -14,6 +15,7 @@ data class FirestoreTransaction(
     fun toTransaction(): Transaction {
         return Transaction(
             transactionId = transactionId,
+            transactionTitle = transactionTitle,
             transactionType = transactionType,
             accountId = accountId,
             transactionAmount = amount,

@@ -89,6 +89,7 @@ class FireStoreViewModel @Inject constructor(
             transactions.forEach { transaction ->
                 val firestoreTransaction = FirestoreTransaction(
                     transactionId = transaction.transactionId,
+                    transactionTitle = transaction.transactionTitle,
                     transactionType = transaction.transactionType,
                     accountId = transaction.accountId,
                     amount = transaction.transactionAmount,

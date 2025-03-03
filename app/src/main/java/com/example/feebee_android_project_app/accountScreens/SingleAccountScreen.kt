@@ -28,11 +28,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.feebee_android_project_app.AuthViewModel
 import com.example.feebee_android_project_app.DatePickerTextField
 import com.example.feebee_android_project_app.TransactionBottomSheet
 import com.example.feebee_android_project_app.data.DateData
 import com.example.feebee_android_project_app.data.RoomViewModel
 import com.example.feebee_android_project_app.data.Transaction
+import com.example.feebee_android_project_app.data.darkModeColors
+import com.example.feebee_android_project_app.data.lightModeColors
 import com.example.feebee_android_project_app.sideNavigationDrawer.CustomToggleButton
 import java.time.LocalDate
 import java.time.Month
@@ -46,6 +49,7 @@ enum class PickedState {
 fun SingleAccountScreen(
     navController: NavController,
     accountId: Int,
+    accountName: String,
     modifier: Modifier
 ) {
     val roomViewModel: RoomViewModel = hiltViewModel()
@@ -73,6 +77,11 @@ fun SingleAccountScreen(
     }
 
     val showBottomSheet = rememberSaveable { mutableStateOf(false) }
+
+
+    val authViewModel: AuthViewModel = hiltViewModel()
+    authViewModel.getAppTheme()
+    val appTheme = authViewModel.themeState.collectAsState()
 
     // Add this effect that will run whenever the necessary parameters change
     LaunchedEffect(accountId, transactionType, pickedState, yearSelected.value, monthSelected.value, dateRangeSelected.value) {
@@ -124,6 +133,7 @@ fun SingleAccountScreen(
                                 dateRangeSelected.value = ""
                                 dateString.value = ""
                             },
+                            appTheme = appTheme,
                             modifier = Modifier
                         )
 
@@ -139,6 +149,7 @@ fun SingleAccountScreen(
                                 dateRangeSelected.value = ""
                                 dateString.value = ""
                             },
+                            appTheme = appTheme,
                             modifier = Modifier.padding(top = 16.dp)
                         )
 
@@ -183,8 +194,8 @@ fun SingleAccountScreen(
                         isChecked.value = !isChecked.value
 //                        getTransactions(accountId, transactionType, roomViewModel, pickedState, yearSelected.value, monthSelected.value, dateRangeSelected.value, context)
                     },
-                    backgroundColor = Color(0xFF999999),
-                    buttonShadeColor = Color(0xFF000000).copy(alpha = 0.7f),
+                    backgroundColor = if (appTheme.value == "light") Color(0xFF999999) else darkModeColors.buttonColor,
+                    buttonShadeColor = if (appTheme.value == "light") Color(0xFF000000).copy(alpha = 0.7f) else darkModeColors.buttonShadeColor.copy(alpha = 0.7f),
                     mode1ContentDescription = "incomes",
                     mode2ContentDescription = "expenses",
                     innerBoxWidth = 170.dp,
@@ -192,17 +203,6 @@ fun SingleAccountScreen(
                     shape = RoundedCornerShape(8.dp)
                 )
 
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                    shape = RoundedCornerShape(50),
-                    onClick = {
-                        showBottomSheet.value = !showBottomSheet.value
-                    }
-                ) {
-                    Text("Add Expense")
-                }
 
 //                DateText(
 //                    dateText = "02/01/2005",
@@ -211,7 +211,22 @@ fun SingleAccountScreen(
             }
 
             if (showBottomSheet.value) {
+
+                Button(
+                    colors = if (appTheme.value == "light") lightModeColors.customButtonColors else darkModeColors.customButtonColors,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                    shape = RoundedCornerShape(50),
+                    onClick = {
+                        showBottomSheet.value = !showBottomSheet.value
+                    }
+                ) {
+                    Text("Add Transaction")
+                }
+
                 TransactionBottomSheet(
+                    accountName = accountName,
                     onDismiss = {showBottomSheet.value = !showBottomSheet.value},
                     onSave = { transaction, accountIdToAdd ->
                         showBottomSheet.value = !showBottomSheet.value

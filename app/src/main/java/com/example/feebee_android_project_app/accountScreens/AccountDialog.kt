@@ -22,8 +22,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.feebee_android_project_app.AuthViewModel
 import com.example.feebee_android_project_app.DropDownButton
 import com.example.feebee_android_project_app.data.Account
+import com.example.feebee_android_project_app.data.darkModeColors
+import com.example.feebee_android_project_app.data.lightModeColors
 import com.example.feebee_android_project_app.exchangeRateScreen.ExchangeRateViewModel
 import java.time.LocalDate
 
@@ -50,6 +53,10 @@ fun AccountDialog (
 
     // Based currency dropdown state.
     val basedCurrencyExpanded = rememberSaveable { mutableStateOf(false) }
+
+    val authViewModel: AuthViewModel = hiltViewModel()
+    authViewModel.getAppTheme()
+    val appTheme = authViewModel.themeState.collectAsState()
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -109,6 +116,7 @@ fun AccountDialog (
         },
         confirmButton = {
             Button(
+                colors = if (appTheme.value == "light") lightModeColors.customButtonColors else darkModeColors.customButtonColors,
                 onClick = {
                     // Convert balance to Double or use default if conversion fails.
                     val balance = accountBalance.value.toDoubleOrNull() ?: 0.0

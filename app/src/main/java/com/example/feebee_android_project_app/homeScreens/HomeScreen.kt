@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,10 +21,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.feebee_android_project_app.AuthViewModel
 import com.example.feebee_android_project_app.accountScreens.ExpenseCard
 import com.example.feebee_android_project_app.accountScreens.checkPickedState
 import com.example.feebee_android_project_app.accountScreens.getTransactions
 import com.example.feebee_android_project_app.data.RoomViewModel
+import com.example.feebee_android_project_app.data.darkModeColors
+import com.example.feebee_android_project_app.data.lightModeColors
 import com.example.feebee_android_project_app.sideNavigationDrawer.CustomToggleButton
 
 @Composable
@@ -45,6 +49,10 @@ fun HomeScreen(
     val context = LocalContext.current
 
     val groupBy = rememberSaveable { mutableStateOf(GroupBy.MONTH) }
+
+    val authViewModel: AuthViewModel = hiltViewModel()
+    authViewModel.getAppTheme()
+    val appTheme = authViewModel.themeState.collectAsState()
 
     LaunchedEffect(selectedAccount, yearSelected.value, monthSelected.value, transactionType) {
         selectedAccount?.let {
@@ -69,9 +77,9 @@ fun HomeScreen(
             .padding(start = 16.dp, end = 16.dp)
     ) {
         item {
-            AccountSelector(accountLists, selectedIndex) {}
+            AccountSelector(accountLists, selectedIndex, appTheme) {}
 
-            DateFilter(yearSelected, monthSelected, modifier = Modifier) {}
+            DateFilter(yearSelected, monthSelected, modifier = Modifier, appTheme = appTheme) {}
 
 
             CustomToggleButton(
@@ -90,8 +98,8 @@ fun HomeScreen(
                         roomViewModel.getAllTransactionsFromAccount(selectedAccount.accountId, transactionType)
                     }
                 },
-                backgroundColor = Color(0xFF999999),
-                buttonShadeColor = Color(0xFF000000).copy(alpha = 0.7f),
+                backgroundColor = if (appTheme.value == "light") Color(0xFF999999) else darkModeColors.buttonColor,
+                buttonShadeColor = if (appTheme.value == "light") Color(0xFF000000).copy(alpha = 0.7f) else darkModeColors.buttonShadeColor.copy(alpha = 0.7f),
                 mode1ContentDescription = "incomes",
                 mode2ContentDescription = "expenses",
                 innerBoxWidth = 170.dp,
@@ -100,14 +108,18 @@ fun HomeScreen(
             )
 
             Column {
-                Button(onClick = {
-                    groupBy.value = if (groupBy.value == GroupBy.MONTH) GroupBy.YEAR else GroupBy.MONTH
-                }, modifier = Modifier.padding(top = 16.dp)) {
-                    Text(if (groupBy.value == GroupBy.MONTH) "Switch to Year" else "Switch to Month")
-                }
 
                 // Add the BarChart before listing the transactions
                 if (transactionList.value.isNotEmpty()) {
+
+                    Button(onClick = {
+                        groupBy.value = if (groupBy.value == GroupBy.MONTH) GroupBy.YEAR else GroupBy.MONTH
+                    }, modifier = Modifier.padding(top = 16.dp),
+                        colors = if (appTheme.value == "light") lightModeColors.customButtonColors else darkModeColors.customButtonColors
+                    ) {
+                        Text(if (groupBy.value == GroupBy.MONTH) "Switch to Year" else "Switch to Month")
+                    }
+
                     TransactionBarChart(
                         transactionList.value, modifier = Modifier.padding(top = 16.dp),
                         groupBy = groupBy.value,

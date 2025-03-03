@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -15,6 +16,7 @@ import com.example.feebee_android_project_app.data.DateData
 fun DateFilter(
     yearSelected: MutableState<String>,
     monthSelected: MutableState<String>,
+    appTheme: State<String>,
     modifier: Modifier,
     onFilterChanged: () -> Unit
 ) {
@@ -25,6 +27,7 @@ fun DateFilter(
             selectedOption = yearSelected,
             buttonOptions = DateData.yearOptions,
             onDropDownButtonClicked = onFilterChanged,
+            appTheme = appTheme,
             modifier = Modifier.padding(bottom = 20.dp)
         )
 
@@ -34,6 +37,7 @@ fun DateFilter(
             selectedOption = monthSelected,
             buttonOptions = DateData.monthOptions,
             onDropDownButtonClicked = onFilterChanged,
+            appTheme = appTheme,
             modifier = Modifier.padding(bottom = 20.dp)
         )
     }

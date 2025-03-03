@@ -135,7 +135,7 @@ dependencies {
 //    implementation(libs.androidx.foundation)
 
     // Kotlin Coroutines Test Dependency
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
+    testImplementation(libs.kotlinx.coroutines.test)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

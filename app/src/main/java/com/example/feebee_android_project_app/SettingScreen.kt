@@ -40,6 +40,8 @@ fun SettingScreen(
         val countryCodeSelected = rememberSaveable { mutableStateOf("") }
 
         val authViewModel: AuthViewModel = hiltViewModel()
+        authViewModel.getAppTheme()
+        val appTheme = authViewModel.themeState.collectAsState()
         val context = LocalContext.current
 
         Text("Pick your language: ")

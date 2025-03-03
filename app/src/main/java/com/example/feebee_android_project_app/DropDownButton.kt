@@ -10,7 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 
@@ -35,7 +37,7 @@ fun DropDownButton(
         onExpandedChange = { expanded.value = it },
         modifier = modifier
     ) {
-        TextField(
+        TextField (
             value = selectedOption.value,
             readOnly = readOnly,
             minLines = 1,
@@ -44,7 +46,6 @@ fun DropDownButton(
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded.value)
             },
-            colors = ExposedDropdownMenuDefaults.textFieldColors(),
             modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, true).size(width = width, height = height),
             textStyle = textStyle
         )

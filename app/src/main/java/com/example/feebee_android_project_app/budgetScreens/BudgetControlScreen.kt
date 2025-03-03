@@ -37,6 +37,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.feebee_android_project_app.AuthViewModel
+import com.example.feebee_android_project_app.data.darkModeColors
+import com.example.feebee_android_project_app.data.lightModeColors
 
 @Composable
 fun BudgetControlScreen(
@@ -45,6 +48,8 @@ fun BudgetControlScreen(
     val budgetViewModel: BudgetViewModel = hiltViewModel()
     val showDialog = rememberSaveable { mutableStateOf(false) }
     val budgetAmount = budgetViewModel.budgetAmount.collectAsState()
+
+
     if (budgetAmount.value == 0.0) {
         InitialBudgetScreen(modifier) {
             showDialog.value = !showDialog.value
@@ -96,6 +101,10 @@ fun MainBudgetScreen(
     val spentAmount by budgetViewModel.spentAmount.collectAsState()
     val budgetCycle by budgetViewModel.budgetCycle.collectAsState()
 
+    val authViewModel: AuthViewModel = hiltViewModel()
+    authViewModel.getAppTheme()
+    val appTheme = authViewModel.themeState.collectAsState()
+
     val progress by remember {
         derivedStateOf {
             if (budgetAmount > 0) spentAmount.toFloat() / budgetAmount.toFloat() else 0f
@@ -143,6 +152,7 @@ fun MainBudgetScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
+            colors = if (appTheme.value == "light") lightModeColors.customButtonColors else darkModeColors.customButtonColors,
             onClick = {
                 showDialog.value = !showDialog.value
             }

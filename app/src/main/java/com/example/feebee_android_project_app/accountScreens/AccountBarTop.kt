@@ -118,13 +118,3 @@ fun AccountBarTop(
         modifier = Modifier
     )
 }
-
-@Preview
-@Composable
-fun AccountBarTopPreview() {
-    Feebee_Android_Project_AppTheme {
-        Box(Modifier.fillMaxSize().wrapContentSize(Alignment.Center)) {
-//            AccountBarTop(Modifier)
-        }
-    }
-}

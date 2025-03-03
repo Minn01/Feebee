@@ -164,6 +164,7 @@ fun MainScreen (
 
            if (showBottomSheet.value) {
                TransactionBottomSheet(
+                   accountName = "",
                    onDismiss = { showBottomSheet.value = !showBottomSheet.value },
                    onSave = { transaction, accountIdToAdd ->
                        showBottomSheet.value = !showBottomSheet.value

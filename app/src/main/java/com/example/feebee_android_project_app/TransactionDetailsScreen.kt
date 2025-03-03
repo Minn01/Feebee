@@ -13,7 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -24,6 +23,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.example.feebee_android_project_app.data.RoomViewModel
+import com.example.feebee_android_project_app.data.darkModeColors
+import com.example.feebee_android_project_app.data.lightModeColors
+import com.google.rpc.context.AttributeContext.Auth
 
 @Composable
 fun TransactionDetailScreen(
@@ -34,6 +36,10 @@ fun TransactionDetailScreen(
     val roomViewModel: RoomViewModel = hiltViewModel()
     roomViewModel.getTransactionFromId(transactionId)
     val transaction = roomViewModel.currentTransaction.collectAsState()
+
+    val authViewModel: AuthViewModel = hiltViewModel()
+    authViewModel.getAppTheme()
+    val appTheme = authViewModel.themeState.collectAsState()
 
     Column(
         modifier = modifier
@@ -97,6 +103,7 @@ fun TransactionDetailScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
+            colors = if (appTheme.value == "light") lightModeColors.customButtonColors else darkModeColors.customButtonColors,
             onClick = {
                 navController.popBackStack()
             },
